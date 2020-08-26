@@ -1,0 +1,12 @@
+{
+  "name": "wunderSubmission",
+  "displayName": "wunderSubmission",
+  "expo": {
+    "name": "wunderSubmission",
+    "slug": "wunderSubmission",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
