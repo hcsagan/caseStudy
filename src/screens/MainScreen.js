@@ -14,7 +14,13 @@ import io from "socket.io-client";
 import { StatusBar } from "expo-status-bar";
 import myList from "./allUsers";
 const socket = io("https://wunder-provider.herokuapp.com");
-import User from "../components/User";
+import UserContainer from "../components/UserContainer";
+import UserButton from "../components/UserButton";
+import UserDetails from "../components/UserDetails";
+import Popup from "../components/Popup";
+import Animated from "react-native-reanimated";
+const statusList = ["Yükleniyor...", "Bağlandı", "Bağlantı Hatası", "Bağlanılamadı", "Bağlantı Koptu"];
+const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
 const { width, height } = Dimensions.get("window");
 const VW = width / 100;
 const VH = height / 100;
@@ -23,8 +29,6 @@ export default () => {
   const [userList, setUserList] = useState([]);
   const [lastUser, setLastUser] = useState();
   const [activeIndex, setActiveIndex] = useState(-1);
-  const statusList = ["Yükleniyor...", "Bağlandı", "Bağlantı Hatası", "Bağlanılamadı", "Bağlantı Koptu"];
-  const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
   const scrollRef = createRef();
   //Initialization and setup the socket
   useEffect(() => {
@@ -32,22 +36,27 @@ export default () => {
     socket.on("connect_error", () => setStatus(2));
     socket.on("connect_failed", () => setStatus(3));
     socket.on("disconnect", () => setStatus(4));
-    socket.on("userList", ({ results }) => results[0] !== lastUser && setLastUser(results[0]));
+    //socket.on("userList", ({ results }) => results[0] !== lastUser && setLastUser(results[0]));
   }, []);
 
   //update the user list
   useEffect(() => {
     lastUser !== undefined && setUserList([lastUser, ...userList]);
   }, [lastUser]);
+
+  //scroll to current active user when triggered.
+  // useEffect(() => {
+  //   activeIndex !== -1 &&
+  //     scrollRef.current.scrollToIndex({
+  //       animated: true,
+  //       index: activeIndex,
+  //       viewPosition: 0,
+  //     });
+  // }, [activeIndex]);
   const scroller = (index) => {
     //console.warn(index);
     /*console.warn(scrollRef.toString());*/
     setActiveIndex(index);
-    scrollRef.current.scrollToIndex({
-      animated: true,
-      index,
-      viewPosition: 0,
-    });
   };
   return (
     <View style={{ flex: 1 }}>
@@ -59,36 +68,43 @@ export default () => {
         ref={scrollRef}
         data={myList}
         renderItem={({ item, index }) => (
-          <User {...item} active={activeIndex === index ? true : false} onPress={() => scroller(index)} />
+          // <User {...item} active={activeIndex === index ? true : false} onPress={() => scroller(index)} />
+          <UserContainer gender={item.gender} key={item.key} active={activeIndex}>
+            {activeIndex !== index && <UserButton {...item} onPress={() => scroller(index)} />}
+            {activeIndex === index && <UserDetails {...item} />}
+          </UserContainer>
         )}
         keyExtractor={(item) => item.email}
       />
+      <Animated.View>
+        <Popup />
+      </Animated.View>
     </View>
   );
 };
 
-const Popup = (props) => {
-  return (
-    <View style={{ width, height, position: "absolute", backgroundColor: "#0005" }}>
-      <View
-        style={{
-          width: 90 * VW,
-          height: 90 * VH,
-          top: 3 * VH,
-          left: 5 * VW,
-          backgroundColor: "#fff",
-          borderRadius: 20,
-          overflow: "hidden",
-        }}
-      >
-        <Image
-          style={{ width: "100%", height: 220 }}
-          source={{ uri: "https://randomuser.me/api/portraits/women/33.jpg" }}
-        ></Image>
-      </View>
-    </View>
-  );
-};
+// const Popup = (props) => {
+//   return (
+//     <View style={{ width, height, position: "absolute", backgroundColor: "#0005" }}>
+//       <View
+//         style={{
+//           width: 90 * VW,
+//           height: 90 * VH,
+//           top: 3 * VH,
+//           left: 5 * VW,
+//           backgroundColor: "#fff",
+//           borderRadius: 20,
+//           overflow: "hidden",
+//         }}
+//       >
+//         <Image
+//           style={{ width: "100%", height: 220 }}
+//           source={{ uri: "https://randomuser.me/api/portraits/women/33.jpg" }}
+//         ></Image>
+//       </View>
+//     </View>
+//   );
+// };
 
 const styles = StyleSheet.create({
   header: {
