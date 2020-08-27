@@ -4,29 +4,30 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 const VW = width / 100;
-
-export default ({ name, picture, location, onPress }) => (
-  <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={{ ...styles.buttonContainer }}>
-    <Image source={{ uri: picture.medium }} style={styles.avatar} />
-    <View style={styles.buttonTextContainer}>
-      <View style={{ borderBottomColor: "#eee5", borderBottomWidth: StyleSheet.hairlineWidth }}>
-        <Text style={styles.userName}>
-          {name.title} {name.first} {name.last}
-        </Text>
+export default React.memo(({ name, picture, location, onPress }) => {
+  return (
+    <TouchableOpacity onPress={() => onPress()} activeOpacity={0.7} style={{ ...styles.buttonContainer }}>
+      <Image source={{ uri: picture.medium }} style={styles.avatar} />
+      <View style={styles.buttonTextContainer}>
         <View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name="ios-pin" size={12} color="#777" style={{ marginRight: 2 }} />
-            <Text style={styles.userCity}>{location.city}</Text>
+          <Text style={styles.userName}>
+            {name.first} {name.last}
+          </Text>
+          <View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Ionicons name="ios-pin" size={12} color="#777" style={{ marginRight: 2 }} />
+              <Text style={styles.userCity}>{location.city}</Text>
+            </View>
           </View>
         </View>
       </View>
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
+});
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    height: 100,
+    height: 30 * VW,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
