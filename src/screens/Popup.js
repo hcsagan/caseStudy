@@ -3,7 +3,7 @@ import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { Path, Svg } from "react-native-svg";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import ContactDetails from "./ContactDetails";
+import ContactDetails from "../components/ContactDetails";
 import MapView, { Marker } from "react-native-maps";
 import { default as mapViewStyle } from "../mapStyle.json";
 const { width, height } = Dimensions.get("window");
