@@ -1,9 +1,11 @@
 import React from "react";
 import { TouchableOpacity, Dimensions } from "react-native";
 import Animated from "react-native-reanimated";
-import Popup from "../screens/Popup";
+import Popup from "../screens/PopupScreen";
 import { Ionicons } from "@expo/vector-icons";
 import PopupContainer from "./PopupContainer";
+import Constants from "expo-constants";
+
 const { width, height } = Dimensions.get("window");
 const VW = width / 100;
 const VH = height / 100;
@@ -13,10 +15,10 @@ export default React.memo(({ popupValue, data, onPress }) => (
     style={{
       position: "absolute",
       width,
-      height: "100%",
+      height,
       backgroundColor: "#0017",
       opacity: popupValue,
-      paddingTop: popupValue.interpolate({ inputRange: [0, 1], outputRange: [100 * VH, 0] }),
+      paddingTop: popupValue.interpolate({ inputRange: [0, 1], outputRange: [100 * VH, Constants.statusBarHeight] }),
     }}
   >
     <PopupContainer>

@@ -6,10 +6,12 @@ export default React.memo((props) => (
     style={{
       flex: 1,
       margin: Dimensions.get("window").width * 0.05,
+      marginTop: Dimensions.get("window").width * 0.01,
     }}
   >
     <View
       style={{
+        // transform: [{ perspective: 960 }, { rotateY: "45deg" }],
         backgroundColor: "#fff",
         borderRadius: 12,
         overflow: "hidden",

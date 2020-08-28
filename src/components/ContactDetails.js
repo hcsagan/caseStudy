@@ -1,42 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Linking } from "react-native";
 import { TouchableOpacity, BaseButton } from "react-native-gesture-handler";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-
-const Icon = ({ name, size = 16, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
+import LinkButton from "./LinkButton";
+const Icon = ({ name, size = 18, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
   <Ionicons style={iconStyle} name={name} size={size} color={color} />
 );
 const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
-export default (email, cell, phone) => (
-  <View>
-    <Text style={{ ...styles.text, fontWeight: "600", fontSize: 16, marginBottom: 8 }}>Contact Details</Text>
-    <TouchableOpacity onPress={() => Linking.openURL(`mailto:${email}`).catch((e) => console.log(e))}>
-      <View style={styles.contact}>
-        <View style={styles.contactIcon}>
-          <Icon name="ios-mail" iconStyle={{ marginRight: 0 }} />
-        </View>
-        {light(email)}
+export default (email, cell, phone) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text
+          style={{
+            ...styles.text,
+            fontWeight: "800",
+            fontSize: 16,
+            marginBottom: 8,
+            letterSpacing: 0.5,
+            textTransform: "uppercase",
+            alignItems: "center",
+          }}
+        >
+          Contact Details
+        </Text>
+        <Ionicons name="ios-person" color={styles.text.color} size={20} />
       </View>
-    </TouchableOpacity>
-    <TouchableOpacity onPress={() => Linking.openURL(`tel:${phone}`).catch((e) => console.log(e))}>
-      <View style={styles.contact}>
-        <View style={styles.contactIcon}>
-          <Entypo name="old-phone" color={styles.text.color} size={13} />
-        </View>
-        {light(phone)}
-      </View>
-    </TouchableOpacity>
-    <TouchableOpacity onPress={() => Linking.openURL(`tel:${cell}`).catch((e) => console.log(e))}>
-      <View style={styles.contact}>
-        <View style={styles.contactIcon}>
-          <Icon name="ios-call" iconStyle={{ marginRight: 0 }} />
-        </View>
-        {light(cell)}
-      </View>
-    </TouchableOpacity>
-  </View>
-);
+      <LinkButton text={email} link={`mailto:${email}`} open={open} icon="ios-mail" iconColor="#9cf" index={-1} />
+      <LinkButton text={phone} link={`tel:${phone}`} open={open} icon="old-phone" iconColor="#fc9" index={0} />
+      <LinkButton text={cell} link={`tel:${cell}`} open={open} icon="ios-call" iconColor="#cf5" index={1} />
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={{ padding: 10, backgroundColor: "#05a", alignItems: "center", marginTop: 10 }}
+        onPress={() => setOpen(() => !open)}
+      >
+        <Text style={{ color: "white" }}>Toggle</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   text: {
@@ -45,7 +50,9 @@ const styles = StyleSheet.create({
   contact: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
+    justifyContent: "flex-start",
+    marginVertical: 8,
+    paddingHorizontal: 8,
   },
   contactIcon: {
     width: 16,

@@ -1,7 +1,7 @@
-import * as React from "react";
+import React, { useRef, useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { Path, Svg } from "react-native-svg";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity, PanGestureHandler } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import ContactDetails from "../components/ContactDetails";
 import MapView, { Marker } from "react-native-maps";
@@ -9,7 +9,6 @@ import { default as mapViewStyle } from "../mapStyle.json";
 const { width, height } = Dimensions.get("window");
 const VW = width / 100;
 const VH = height / 100;
-
 const Icon = ({ name, size = 16, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
   <Ionicons style={iconStyle} name={name} size={size} color={color} />
 );
@@ -35,14 +34,38 @@ const Name = ({ name }) => (
 );
 
 const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
+  const [backToPosition, setBackToPosition] = useState(false);
   const coordinates = {
     latitude: parseFloat(location.coordinates.latitude),
     longitude: parseFloat(location.coordinates.longitude),
   };
+  const region = {
+    ...coordinates,
+    latitudeDelta: 0.5,
+    longitudeDelta: 0.5,
+  };
+  // ! What I did here is, just check if region is different than user's location.
+  // ! If, it is different, just make marker icon red, if it's not, turn back to grey
+  const regionCheck = ({ latitude, longitude }) => {
+    if (Math.abs(coordinates.longitude - longitude) > 0.3 || Math.abs(coordinates.latitude - latitude) > 0.18) {
+      backToPosition === false && setBackToPosition(true);
+    } else {
+      backToPosition === true && setBackToPosition(false);
+    }
+
+    //console.warn(`${latitude} ${longitude}`);
+  };
+  const mapRef = useRef();
   return (
-    <ScrollView>
+    <ScrollView bounces={false}>
       <View style={styles.container}>
-        <Image style={styles.image} source={{ uri: picture.large }} />
+        <Image
+          style={{
+            ...styles.image,
+            zIndex: -1,
+          }}
+          source={{ uri: picture.large }}
+        />
         <Mask />
         <View style={styles.content}>
           <View style={styles.titleContainer}>
@@ -56,17 +79,43 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
             </View>
           </View>
           {ContactDetails(email, cell, phone)}
-          <View>
-            <Text>Konum</Text>
+          <View style={{ marginTop: 8 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingVertical: 16,
+                borderTopWidth: StyleSheet.hairlineWidth,
+                borderTopColor: "#f0f0f7",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ ...styles.text, ...styles.heading }}>location</Text>
+              <Ionicons name="md-locate" size={20} color={styles.text.color} />
+            </View>
+
+            <TouchableOpacity onPress={() => mapRef.current.animateToRegion(region)}>
+              <View style={{ ...styles.contact, alignItems: "stretch" }}>
+                <Icon
+                  name="ios-pin"
+                  size={20}
+                  iconStyle={{ marginRight: 10 }}
+                  color={backToPosition ? "#be3a3a" : "#778"}
+                />
+                <View>
+                  {light(location.street.name + ", Nr. " + location.street.number)}
+                  <View style={{ height: 4 }} />
+                  {light(location.postcode + ", " + location.city + "/" + location.country)}
+                </View>
+              </View>
+            </TouchableOpacity>
             <MapView
+              ref={mapRef}
               provider="google"
               style={styles.mapStyle}
               customMapStyle={mapViewStyle}
-              initialRegion={{
-                ...coordinates,
-                latitudeDelta: 0.5,
-                longitudeDelta: 0.5,
-              }}
+              initialRegion={region}
+              onRegionChangeComplete={regionCheck}
             >
               <Marker coordinate={coordinates} />
             </MapView>
@@ -93,12 +142,13 @@ const styles = StyleSheet.create({
   },
   image: {
     position: "absolute",
-    width: "100%",
-    height: 300,
+    top: 0,
+    width: 90 * VW,
+    height: 90 * VW,
   },
   mask: {
     flex: 5,
-    marginTop: 260,
+    marginTop: 90 * VW - 30,
     justifyContent: "flex-start",
   },
   nameContainer: {
@@ -119,6 +169,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flex: 1,
     width: "100%",
+    backgroundColor: "#fff",
+    // position: "absolute",
   },
   titleContainer: {
     marginTop: -20,
@@ -127,6 +179,20 @@ const styles = StyleSheet.create({
   mapStyle: {
     width: "100%",
     height: 50 * VW,
+  },
+  heading: {
+    fontWeight: "800",
+    fontSize: 16,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    alignItems: "center",
+  },
+  contact: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginBottom: 16,
+    paddingHorizontal: 8,
   },
 });
 

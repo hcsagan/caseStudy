@@ -12,7 +12,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Local List" component={MainScreen} />
+        <Stack.Screen name="Local List" component={MainScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
