@@ -1,27 +1,28 @@
 import React from "react";
 import { View, Dimensions } from "react-native";
-
-export default React.memo((props) => (
-  <View
-    style={{
-      flex: 1,
-      margin: Dimensions.get("window").width * 0.05,
-      marginTop: Dimensions.get("window").width * 0.01,
-    }}
-  >
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+export default React.memo((props) => {
+  const insets = useSafeAreaInsets();
+  return (
     <View
       style={{
-        // transform: [{ perspective: 960 }, { rotateY: "45deg" }],
-        backgroundColor: "#fff",
-        borderRadius: 12,
-        overflow: "hidden",
-        ...boxShadow,
+        marginHorizontal: Dimensions.get("window").width * 0.05,
+        marginTop: insets.top,
       }}
     >
-      {props.children}
+      <View
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 12,
+          overflow: "hidden",
+          ...boxShadow,
+        }}
+      >
+        {props.children}
+      </View>
     </View>
-  </View>
-));
+  );
+});
 const boxShadow = {
   shadowColor: "#000",
   shadowOffset: {

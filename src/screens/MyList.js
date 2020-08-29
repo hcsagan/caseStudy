@@ -13,30 +13,23 @@ const animConfig = {
 };
 
 export default () => {
+  console.log("main screen mounted");
   const [activeIndex, setActiveIndex] = useState(-1);
-  const popupValue = new Value(0);
-  const anim = timing(popupValue, animConfig);
-  const animBack = timing(popupValue, { ...animConfig, toValue: 0 });
+  // const popupValue = new Value(0);
+  // const anim = timing(popupValue, animConfig);
+  // const animBack = timing(popupValue, { ...animConfig, toValue: 0 });
   const deactivate = async () => {
     setTimeout(() => setActiveIndex(() => -1), 0);
   };
   // ! scroll to current active user when triggered.
-  useEffect(() => {
-    activeIndex !== -1 && anim.start();
-  }, [activeIndex]);
+  // useEffect(() => {
+  //   activeIndex !== -1 && anim.start();
+  // }, [activeIndex]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <UserList data={myList} onPress={setActiveIndex} />
-      {activeIndex !== -1 && (
-        <AnimatedPopup
-          popupValue={popupValue}
-          data={{ ...myList[activeIndex] }}
-          onPress={() => {
-            animBack.start(deactivate);
-          }}
-        />
-      )}
+      <UserList data={myList} onPress={setActiveIndex} local={true} />
+      {activeIndex !== -1 && <AnimatedPopup data={{ ...myList[activeIndex] }} onPress={deactivate} />}
     </SafeAreaView>
   );
 };

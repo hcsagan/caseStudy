@@ -1,11 +1,11 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { Path, Svg } from "react-native-svg";
-import { ScrollView, TouchableOpacity, PanGestureHandler } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import ContactDetails from "../components/ContactDetails";
-import MapView, { Marker } from "react-native-maps";
-import { default as mapViewStyle } from "../mapStyle.json";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MapSection from "../components/MapSection";
 const { width, height } = Dimensions.get("window");
 const VW = width / 100;
 const VH = height / 100;
@@ -24,7 +24,6 @@ const Mask = () => (
     </Svg>
   </View>
 );
-const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 const Name = ({ name }) => (
   <View style={{ flexDirection: "column", width: "75%" }}>
     <Text adjustsFontSizeToFit={true} style={{ ...styles.nameText, ...styles.text }}>
@@ -33,31 +32,13 @@ const Name = ({ name }) => (
   </View>
 );
 
-const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
-  const [backToPosition, setBackToPosition] = useState(false);
-  const coordinates = {
-    latitude: parseFloat(location.coordinates.latitude),
-    longitude: parseFloat(location.coordinates.longitude),
-  };
-  const region = {
-    ...coordinates,
-    latitudeDelta: 0.5,
-    longitudeDelta: 0.5,
-  };
-  // ! What I did here is, just check if region is different than user's location.
-  // ! If, it is different, just make marker icon red, if it's not, turn back to grey
-  const regionCheck = ({ latitude, longitude }) => {
-    if (Math.abs(coordinates.longitude - longitude) > 0.3 || Math.abs(coordinates.latitude - latitude) > 0.18) {
-      backToPosition === false && setBackToPosition(true);
-    } else {
-      backToPosition === true && setBackToPosition(false);
-    }
-
-    //console.warn(`${latitude} ${longitude}`);
-  };
-  const mapRef = useRef();
+const App = React.memo(({ gender, name, dob, email, cell, phone, picture, location }) => {
+  const insets = useSafeAreaInsets();
   return (
-    <ScrollView bounces={false}>
+    <ScrollView
+      style={{ height: Dimensions.get("window").height - (insets.top + insets.bottom + 5 * VW) }}
+      bounces={false}
+    >
       <View style={styles.container}>
         <Image
           style={{
@@ -78,53 +59,13 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
               <Text style={[styles.text, { fontSize: 24 }]}>{dob.age}</Text>
             </View>
           </View>
-          {ContactDetails(email, cell, phone)}
-          <View style={{ marginTop: 8 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 16,
-                borderTopWidth: StyleSheet.hairlineWidth,
-                borderTopColor: "#f0f0f7",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ ...styles.text, ...styles.heading }}>location</Text>
-              <Ionicons name="md-locate" size={20} color={styles.text.color} />
-            </View>
-
-            <TouchableOpacity onPress={() => mapRef.current.animateToRegion(region)}>
-              <View style={{ ...styles.contact, alignItems: "stretch" }}>
-                <Icon
-                  name="ios-pin"
-                  size={20}
-                  iconStyle={{ marginRight: 10 }}
-                  color={backToPosition ? "#be3a3a" : "#778"}
-                />
-                <View>
-                  {light(location.street.name + ", Nr. " + location.street.number)}
-                  <View style={{ height: 4 }} />
-                  {light(location.postcode + ", " + location.city + "/" + location.country)}
-                </View>
-              </View>
-            </TouchableOpacity>
-            <MapView
-              ref={mapRef}
-              provider="google"
-              style={styles.mapStyle}
-              customMapStyle={mapViewStyle}
-              initialRegion={region}
-              onRegionChangeComplete={regionCheck}
-            >
-              <Marker coordinate={coordinates} />
-            </MapView>
-          </View>
+          <ContactDetails email={email} cell={cell} phone={phone} />
+          <MapSection location={location} styles={styles} />
         </View>
       </View>
     </ScrollView>
   );
-};
+});
 
 const mask = {
   width: 90 * VW,
@@ -159,7 +100,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingBottom: 16,
     marginBottom: 16,
-    overflow: "hidden",
+    // overflow: "hidden",
   },
   nameText: {
     fontSize: 24,

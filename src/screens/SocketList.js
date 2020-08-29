@@ -1,59 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { View, BackHandler } from "react-native";
 import io from "socket.io-client";
-import myList from "./allUsers";
 import UserList from "../components/UserList";
-import { Value, Easing, timing } from "react-native-reanimated";
 import AnimatedPopup from "../components/AnimatedPopup";
 import ConnectionStatus from "../components/ConnectionStatus";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const LIMIT = 20;
 const socket = io("https://wunder-provider.herokuapp.com");
-const animConfig = {
-  duration: 500,
-  toValue: 1,
-  easing: Easing.inOut(Easing.cubic),
-};
+
 export default () => {
   const [status, setStatus] = useState(0);
   const [userList, setUserList] = useState([]);
   const [lastUser, setLastUser] = useState();
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const popupValue = new Value(0);
-  const anim = timing(popupValue, animConfig);
-  const animBack = timing(popupValue, { ...animConfig, toValue: 0 });
-  //Initialization and setup the socket
-  // useEffect(() => {
-  //   socket.on("connect", () => setStatus(1));
-  //   socket.on("connect_error", () => setStatus(2));
-  //   socket.on("connect_failed", () => setStatus(3));
-  //   socket.on("disconnect", () => setStatus(4));
-  //   socket.on("userList", ({ results }) => results[0] !== lastUser && setLastUser(results[0]));
-  // }, []);
+  const [shownPopup, setShownPopup] = useState(false);
 
-  //update the user list
+  // Initialization and setup the socket
+  // ! socket makes some latency issue in emulator and low-end devices due to js thread overload
   useEffect(() => {
-    lastUser !== undefined && setUserList([lastUser, ...userList]);
+    socket.on("connect", () => setStatus(1));
+    socket.on("connect_error", () => setStatus(2));
+    //disabled below listeners due to performance issues
+    //socket.on("connect_failed", () => setStatus(3));
+    //socket.on("disconnect", () => setStatus(4));
+    socket.on("userList", ({ results, info }) => {
+      results[0] !== lastUser && setLastUser({ ...results[0], key: info.seed });
+    });
+    return () => socket.removeAllListeners();
+  }, []);
+
+  //update the user list, and limit the users at some point
+  useEffect(() => {
+    if (lastUser !== undefined && !userList.includes(lastUser)) {
+      if (userList.length >= LIMIT)
+        setUserList((userList) => {
+          userList.pop();
+          return [lastUser, ...userList];
+        });
+      else setUserList((userList) => [lastUser, ...userList]);
+    }
   }, [lastUser]);
-  const deactivate = async () => {
-    setTimeout(() => setActiveIndex(() => -1), 0);
+  const openPopup = (index) => {
+    setShownPopup(userList[index]);
   };
-  // ! scroll to current active user when triggered.
-  useEffect(() => {
-    activeIndex !== -1 && anim.start();
-  }, [activeIndex]);
+  const closePopup = (index) => {
+    setShownPopup(false);
+  };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ConnectionStatus status={status} />
-      <UserList data={myList} onPress={setActiveIndex} />
-      {activeIndex !== -1 && (
-        <AnimatedPopup
-          popupValue={popupValue}
-          data={{ ...myList[activeIndex] }}
-          onPress={() => {
-            animBack.start(deactivate);
-          }}
-        />
-      )}
-    </View>
+      <UserList data={userList} onPress={openPopup} />
+      {/* 
+        There is a difference between this one and local list which is the data.
+        I set current open popup on seperate state because
+        it causes re-render in all userList related components when new data comes from socket 
+       */}
+      {shownPopup && <AnimatedPopup data={shownPopup} onPress={() => setTimeout(closePopup, 0)} />}
+    </SafeAreaView>
   );
 };

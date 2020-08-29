@@ -1,57 +1,6 @@
 export default [
   {
-    gender: "female",
-    name: {
-      title: "mrs",
-      first: "vildan",
-      last: "yazıcı",
-    },
-    location: {
-      street: "9020 fatih sultan mehmet cd",
-      city: "burdur",
-      state: "kilis",
-      postcode: 37830,
-      coordinates: {
-        latitude: "17.5317",
-        longitude: "114.0174",
-      },
-      timezone: {
-        offset: "-3:30",
-        description: "Newfoundland",
-      },
-    },
-    email: "vildan.yazıcı@example.com",
-    login: {
-      uuid: "not important",
-      username: "happyfrog784",
-      password: "baltimor",
-      salt: "lWMugDGt",
-      md5: "not important",
-      sha1: "not important",
-      sha256: "not really",
-    },
-    dob: {
-      date: "1978-01-06T14:43:05Z",
-      age: 40,
-    },
-    registered: {
-      date: "2002-11-13T11:39:42Z",
-      age: 16,
-    },
-    phone: "(969)-621-6528",
-    cell: "(038)-323-6338",
-    id: {
-      name: "",
-      value: null,
-    },
-    picture: {
-      large: "https://randomuser.me/api/portraits/women/33.jpg",
-      medium: "https://randomuser.me/api/portraits/med/women/33.jpg",
-      thumbnail: "https://randomuser.me/api/portraits/thumb/women/33.jpg",
-    },
-    nat: "TR",
-  },
-  {
+    key: "yasemin.cevik@example.com",
     gender: "female",
     name: {
       title: "Miss",
@@ -108,6 +57,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "davut.kececi@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -164,6 +114,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "yasemin.yorulmaz@example.com",
     gender: "female",
     name: {
       title: "Miss",
@@ -220,6 +171,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "baris.denkel@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -276,6 +228,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "mustafa.orge@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -332,6 +285,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "ege.numanoglu@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -388,6 +342,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "kerim.tugluk@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -444,6 +399,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "omur.pocan@example.com",
     gender: "female",
     name: {
       title: "Mrs",
@@ -500,6 +456,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "macit.yorulmaz@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -556,6 +513,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "ece.gurmen@example.com",
     gender: "female",
     name: {
       title: "Miss",
@@ -612,6 +570,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "giray.ertepinar@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -668,6 +627,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "umit.tuglu@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -724,6 +684,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "kubra.yazici@example.com",
     gender: "female",
     name: {
       title: "Ms",
@@ -780,6 +741,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "efe.akan@example.com",
     gender: "male",
     name: {
       title: "Mr",
@@ -836,6 +798,7 @@ export default [
     nat: "TR",
   },
   {
+    key: "vedat.bicer@example.com",
     gender: "male",
     name: {
       title: "Mr",
