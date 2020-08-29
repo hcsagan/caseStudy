@@ -27,10 +27,10 @@ export default ({ email, cell, phone }) => {
   //   easing: Easing.out(Easing.sin),
   // });
   useEffect(() => {
-    open !== 0 && animate();
+    open !== 0 && animate(open ? openConfig : closeConfig);
   }, [open]);
-  const animate = () => {
-    timing(transition, open ? closeConfig : openConfig).start();
+  const animate = (action) => {
+    timing(transition, action).start();
   };
   const rotate = interpolate(transition, {
     inputRange: [0.2, 0.8],
@@ -46,7 +46,7 @@ export default ({ email, cell, phone }) => {
     <View>
       <View style={styles.headerWrapper}>
         <Text style={[styles.text, styles.headerText]}>Contact</Text>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => setOpen((open) => !open)}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => setOpen((open) => (open === 0 ? true : !open))}>
           <View style={styles.detailsButton}>
             <Text style={styles.detailsButtonText}>DETAILS</Text>
             <Animated.View style={{ transform: transformOrigin({ x: 0, y: -1 }, { rotate }) }}>

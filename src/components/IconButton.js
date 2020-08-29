@@ -3,16 +3,14 @@ import { TouchableOpacity, View, StyleSheet, Text, Dimensions, Linking } from "r
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import Animated, { interpolate, Extrapolate } from "react-native-reanimated";
 const { width } = Dimensions.get("screen");
-import { useTransition, transformOrigin } from "react-native-redash";
-
-const Icon = ({ name, size = 36, color }) => {
+const areaWidth = width * 0.7 - 32;
+const Icon = React.memo(({ name, size = 36, color }) => {
   const NewIcon = Animated.createAnimatedComponent(name === "old-phone" ? Entypo : Ionicons);
-
   return <NewIcon name={name} size={name === "old-phone" ? size - 6 : size} color={color} />;
-};
+});
 const lightText = (text) => <Text style={{ color: "#889", fontWeight: "300" }}>{text}</Text>;
-export default React.memo(({ text, link, icon, iconColor, open, index }) => {
-  const transition = open;
+export default React.memo(({ text, link, icon, iconColor, open: transition, index }) => {
+  const posX = (areaWidth * index) / 2 + width * 0.05;
   // Icon positioning
   const positionY = interpolate(transition, {
     inputRange: [0, 0.6],
@@ -20,8 +18,6 @@ export default React.memo(({ text, link, icon, iconColor, open, index }) => {
     extrapolate: Extrapolate.CLAMP,
   });
   // 0 : -36, 1 : width - 72
-  const areaWidth = width * 0.7 - 32;
-  const posX = (areaWidth * index) / 2 + width * 0.05;
   const positionX = interpolate(transition, {
     inputRange: [0.2, 0.6],
     outputRange: [posX, 0],
@@ -52,17 +48,23 @@ export default React.memo(({ text, link, icon, iconColor, open, index }) => {
   // ! works but it is glitchy, don't know if it's about my device or the api. So, deactivating icon color feature
   // const animatedColor = interpolateColor(transition, {
   //   inputRange: [0, 1],
-  //   outputRange: [iconColor,  "rgb(85, 85, 102)"],
+  //   outputRange: [iconColor, "rgb(85, 85, 102)"],
   // });
   const animatedColor = iconColor;
   const texts = ["GSM", "Phone", "Mail"];
+
+  //color transition had to do it this way, a grey icon on top of the colorful one.
+  const greyOpacity = interpolate(transition, {
+    inputRange: [0, 0.2],
+    outputRange: [0, 1],
+    extrapolate: Extrapolate.CLAMP,
+  });
   return (
     <>
       <Animated.View
         style={{
           ...styles.button,
           position: "absolute",
-
           transform: [{ translateY: positionY }, { translateX: positionX }],
         }}
       >
@@ -75,6 +77,9 @@ export default React.memo(({ text, link, icon, iconColor, open, index }) => {
               }}
             >
               <Icon name={icon} color={animatedColor} />
+              <Animated.View style={{ position: "absolute", opacity: greyOpacity }}>
+                <Icon name={icon} color="rgb(85, 85, 102)" />
+              </Animated.View>
 
               <Animated.Text
                 style={{ position: "absolute", top: 46, fontSize: 11, opacity: iconTextOpacity }}

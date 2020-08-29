@@ -4,32 +4,25 @@ import Animated, { Value, timing, Easing, interpolate } from "react-native-reani
 import Popup from "../screens/PopupScreen";
 import { Ionicons } from "@expo/vector-icons";
 import PopupContainer from "./PopupContainer";
-import Constants from "expo-constants";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 const { width, height } = Dimensions.get("screen");
 const VW = width / 100;
 const VH = height / 100;
-const popupValue = new Value(0);
 
 const animConfig = {
   duration: 500,
   toValue: 1,
   easing: Easing.in(Easing.cubic),
 };
-const openUp = () => {
-  return timing(popupValue, animConfig);
-};
-const closeDown = () => {
-  return timing(popupValue, { duration: 500, toValue: 0, easing: Easing.out(Easing.cubic) });
-};
-export default React.memo(({ data, onPress }) => {
+
+const AnimatedPopup = ({ data, onPress }) => {
+  const popupValue = new Value(0);
   useEffect(() => {
-    //console.warn("mounted");
-    console.log("animated popup mounted");
-    openUp().start();
+    timing(popupValue, animConfig).start();
   }, []);
+  const closeDown = () => {
+    return timing(popupValue, { duration: 500, toValue: 0, easing: Easing.out(Easing.cubic) });
+  };
   // console.log(data);
-  const insets = useSafeAreaInsets();
   return (
     <Animated.View
       style={{
@@ -62,4 +55,6 @@ export default React.memo(({ data, onPress }) => {
       </PopupContainer>
     </Animated.View>
   );
-});
+};
+
+export default React.memo(AnimatedPopup);
