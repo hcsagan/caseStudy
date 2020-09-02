@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import PopupScreen from "./PopupScreen";
 const { width } = Dimensions.get("window");
+
 export default React.memo(({ route, navigation }) => {
   const { data } = route.params;
   const insets = useSafeAreaInsets();
@@ -17,6 +18,7 @@ export default React.memo(({ route, navigation }) => {
     </View>
   );
 });
+
 const styles = StyleSheet.create({
   container: ({ top, bottom, left, right }) => ({
     flex: 1,
