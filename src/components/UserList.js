@@ -1,38 +1,43 @@
 import React from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import UserContainer from "./UserContainer";
 import UserButton from "./UserButton";
-import Swipeable from "react-native-gesture-handler/Swipeable";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default React.memo(({ data, onPress, local = false }) => {
+export default React.memo(({ data, onPress, socket }) => {
+  const { top, bottom } = useSafeAreaInsets();
+  const insets = {
+    top,
+    bottom,
+  };
+  if (socket === true) {
+    insets.bottom += insets.top;
+    insets.top = 0;
+  }
+  const renderItem = ({ item, index }) => (
+    <UserContainer gender={item.gender}>
+      <UserButton
+        data={item}
+        name={item.name}
+        location={item.location}
+        picture={item.picture}
+        onPress={onPress}
+        index={index}
+      />
+    </UserContainer>
+  );
+
   return (
     <FlatList
       data={data}
-      style={{ backgroundColor: "#f5f5f9" }}
-      renderItem={({ item, index }) => (
-        // <User {...item} active={activeIndex === index ? true : false} onPress={() => scroller(index)} />
-
-        <UserContainer gender={item.gender}>
-          <UserButton
-            name={item.name}
-            location={item.location}
-            picture={item.picture}
-            onPress={async () => {
-              setTimeout(() => onPress(index), 0);
-            }}
-          />
-          {/* <View
-            style={{
-              height: "100%",
-              position: "absolute",
-              borderLeftColor: "red",
-              borderLeftWidth: StyleSheet.hairlineWidth,
-              left: "50%",
-              zIndex: 1,
-            }}
-          /> */}
-        </UserContainer>
-      )}
+      renderItem={renderItem}
+      contentContainerStyle={styles.listContainer(insets)}
+      style={styles.list}
     />
   );
+});
+
+const styles = StyleSheet.create({
+  list: { backgroundColor: "#f5f5f9" },
+  listContainer: ({ top, bottom }) => ({ paddingTop: top, paddingBottom: bottom }),
 });

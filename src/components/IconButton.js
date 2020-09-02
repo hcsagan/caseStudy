@@ -1,7 +1,7 @@
 import React from "react";
-import { TouchableOpacity, View, StyleSheet, Text, Dimensions, Linking } from "react-native";
+import { TouchableOpacity, View, StyleSheet, Text, Dimensions, Linking, Clipboard, Alert } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-import Animated, { interpolate, Extrapolate } from "react-native-reanimated";
+import Animated, { interpolate, Extrapolate, sub } from "react-native-reanimated";
 const { width } = Dimensions.get("screen");
 const areaWidth = width * 0.7 - 32;
 const Icon = React.memo(({ name, size = 36, color }) => {
@@ -10,14 +10,18 @@ const Icon = React.memo(({ name, size = 36, color }) => {
 });
 const lightText = (text) => <Text style={{ color: "#889", fontWeight: "300" }}>{text}</Text>;
 export default React.memo(({ text, link, icon, iconColor, open: transition, index }) => {
+  /*
+   * Animation calculations
+   */
+
   const posX = (areaWidth * index) / 2 + width * 0.05;
-  // Icon positioning
+  // Icon positioning (Y-Axis)
   const positionY = interpolate(transition, {
     inputRange: [0, 0.6],
     outputRange: [20, index * 30],
     extrapolate: Extrapolate.CLAMP,
   });
-  // 0 : -36, 1 : width - 72
+  //(X-Axis)
   const positionX = interpolate(transition, {
     inputRange: [0.2, 0.6],
     outputRange: [posX, 0],
@@ -38,78 +42,84 @@ export default React.memo(({ text, link, icon, iconColor, open: transition, inde
     extrapolate: Extrapolate.CLAMP,
   });
 
-  //icon scaling
+  //Text opacity (for the ones under icons)
   const iconTextOpacity = interpolate(transition, {
     inputRange: [0, 0.2],
     outputRange: [1, 0],
     extrapolate: Extrapolate.CLAMP,
   });
 
-  // ! works but it is glitchy, don't know if it's about my device or the api. So, deactivating icon color feature
-  // const animatedColor = interpolateColor(transition, {
-  //   inputRange: [0, 1],
-  //   outputRange: [iconColor, "rgb(85, 85, 102)"],
-  // });
-  const animatedColor = iconColor;
-  const texts = ["GSM", "Phone", "Mail"];
+  // TODO Long Press actions (For now, it has only copy, but modal and actions can be added)
+  writeToClipboard = async (text) => {
+    await Clipboard.setString(text);
+    Alert.alert("Kopyalandi !");
+  };
 
-  //color transition had to do it this way, a grey icon on top of the colorful one.
+  const texts = ["GSM", "Phone", "Mail"]; //* titles for icon actions
+
+  //color transition: had to do it this way, a grey icon on top of the colored one.
   const greyOpacity = interpolate(transition, {
     inputRange: [0, 0.2],
     outputRange: [0, 1],
     extrapolate: Extrapolate.CLAMP,
   });
   return (
-    <>
-      <Animated.View
-        style={{
-          ...styles.button,
-          position: "absolute",
-          transform: [{ translateY: positionY }, { translateX: positionX }],
-        }}
+    <Animated.View style={styles.button(positionX, positionY)}>
+      <TouchableOpacity
+        onPress={() => Linking.openURL(link).catch((e) => console.log(e))}
+        onLongPress={() => writeToClipboard(text)}
       >
-        <TouchableOpacity onPress={() => Linking.openURL(link).catch((e) => console.log(e))}>
-          <View style={styles.contact}>
-            <Animated.View
-              style={{
-                ...styles.contactIcon,
-                transform: [{ scale: scale }],
-              }}
-            >
-              <Icon name={icon} color={animatedColor} />
-              <Animated.View style={{ position: "absolute", opacity: greyOpacity }}>
-                <Icon name={icon} color="rgb(85, 85, 102)" />
-              </Animated.View>
-
-              <Animated.Text
-                style={{ position: "absolute", top: 46, fontSize: 11, opacity: iconTextOpacity }}
-                allowFontScaling={false}
-              >
-                {lightText(texts[index])}
-              </Animated.Text>
+        <View style={styles.contact}>
+          <Animated.View style={styles.contactIcon(scale)}>
+            <Animated.View style={styles.bigIcon(greyOpacity)}>
+              <Icon name={icon} color={iconColor} />
             </Animated.View>
-            <Animated.View style={{ opacity }}>{lightText(text)}</Animated.View>
-          </View>
-        </TouchableOpacity>
-      </Animated.View>
-    </>
+            <Animated.View style={styles.littleIcon(greyOpacity)}>
+              <Icon name={icon} color="#556" />
+            </Animated.View>
+            <Animated.Text style={styles.descText(iconTextOpacity)} allowFontScaling={false}>
+              {lightText(texts[index])}
+            </Animated.Text>
+          </Animated.View>
+          <Animated.View style={{ opacity }}>{lightText(text)}</Animated.View>
+        </View>
+      </TouchableOpacity>
+    </Animated.View>
   );
 });
 
 const styles = StyleSheet.create({
+  button: (x, y) => ({
+    position: "absolute",
+    transform: [{ translateY: y }, { translateX: x }],
+  }),
   text: {
     color: "#556",
   },
-
+  bigIcon: (greyOpacity) => ({
+    position: "absolute",
+    opacity: sub(1, greyOpacity),
+  }),
+  littleIcon: (greyOpacity) => ({
+    position: "absolute",
+    opacity: greyOpacity,
+  }),
   contact: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  contactIcon: {
+  contactIcon: (scale) => ({
     width: 36,
     height: 36,
     alignItems: "center",
     justifyContent: "center",
-  },
+    transform: [{ scale: scale }],
+  }),
+  descText: (opacity) => ({
+    position: "absolute",
+    top: 46,
+    fontSize: 11,
+    opacity,
+  }),
 });

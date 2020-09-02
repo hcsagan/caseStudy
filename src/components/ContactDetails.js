@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import IconButton from "./IconButton";
-import Animated, { interpolate, Extrapolate, Easing, Value, timing } from "react-native-reanimated";
+import Animated, { interpolate, Extrapolate, Easing, Value, timing, set } from "react-native-reanimated";
 import { transformOrigin } from "react-native-redash";
 const Icon = ({ name, size = 18, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
   <Ionicons style={iconStyle} name={name} size={size} color={color} />
 );
 const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
-const transition = new Value(0);
 const openConfig = {
   toValue: 1,
   duration: 500,
@@ -21,11 +20,9 @@ const closeConfig = {
   easing: Easing.out(Easing.sin),
 };
 export default ({ email, cell, phone }) => {
-  const [open, setOpen] = useState(0);
-  // const transition = useTransition(open, {
-  //   duration: 500,
-  //   easing: Easing.out(Easing.sin),
-  // });
+  const transition = useRef(new Value(0)).current;
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     open !== 0 && animate(open ? openConfig : closeConfig);
   }, [open]);
@@ -55,9 +52,9 @@ export default ({ email, cell, phone }) => {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{ height: 102 }}>
-        {links.map((item, index) => (
-          <IconButton {...item} open={transition} key={index} />
+      <View style={styles.iconContainer}>
+        {links.map((item) => (
+          <IconButton {...item} open={transition} key={item.index} />
         ))}
       </View>
     </View>
@@ -68,6 +65,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#556",
   },
+  iconContainer: { height: 102 },
   contactIcon: {
     width: 16,
     marginRight: 4,

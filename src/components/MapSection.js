@@ -2,12 +2,22 @@ import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { default as mapViewStyle } from "../mapStyle.json";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
+import { useTransition } from "react-native-redash";
+import Animated, { Easing } from "react-native-reanimated";
 
 const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
-export default ({ location, styles }) => {
+export default ({ location, styles: style }) => {
   const [backToPosition, setBackToPosition] = useState(false);
+  const opacity = useTransition(backToPosition, {
+    duration: 200,
+    easing: Easing.in(Easing.circle),
+  });
+  // const opacity = interpolate(transition, {
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 1],
+  // });
   const coordinates = {
     latitude: parseFloat(location.coordinates.latitude),
     longitude: parseFloat(location.coordinates.longitude),
@@ -31,40 +41,33 @@ export default ({ location, styles }) => {
   };
   const mapRef = useRef();
   return (
-    <View style={{ marginTop: 8 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingVertical: 16,
-          borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: "#f0f0f7",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ ...styles.text, ...styles.heading }}>location</Text>
-        <Ionicons name="ios-pin" size={20} color={styles.text.color} />
+    <View style={styles.container}>
+      <View style={styles.mapContainer}>
+        <Text style={[style.text, style.heading]}>LOCATION</Text>
+        <Animated.View style={{ opacity }}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => mapRef.current.animateToRegion(region)}>
+            <View style={styles.detailsButton}>
+              <Text style={styles.detailsButtonText}>RESET</Text>
+              <View>
+                <Ionicons name="md-locate" size={16} style={styles.locationIcon} color="#713" />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
-      <TouchableOpacity onPress={() => mapRef.current.animateToRegion(region)}>
-        <View style={{ ...styles.contact, alignItems: "stretch" }}>
-          <Ionicons
-            name="md-locate"
-            size={16}
-            style={{ marginRight: 10, marginTop: 2 }}
-            color={backToPosition ? "#be3a3a" : "#778"}
-          />
-          <View>
-            {light(location.street.name + ", Nr. " + location.street.number)}
-            <View style={{ height: 4 }} />
-            {light(location.postcode + ", " + location.city + "/" + location.country)}
-          </View>
+      <View style={[style.contact, styles.stretch]}>
+        <Ionicons name="ios-pin" size={20} color="#be3a3a" style={styles.markerIcon} />
+        <View>
+          {light(location.street.name + ", Nr. " + location.street.number)}
+          <View style={{ height: 4 }} />
+          {light(location.postcode + ", " + location.city + "/" + location.country)}
         </View>
-      </TouchableOpacity>
+      </View>
       <MapView
         ref={mapRef}
         provider="google"
-        style={styles.mapStyle}
+        style={style.mapStyle}
         customMapStyle={mapViewStyle}
         initialRegion={region}
         onRegionChangeComplete={regionCheck}
@@ -74,3 +77,38 @@ export default ({ location, styles }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { marginTop: 8 },
+  mapContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingBottom: 16,
+    paddingTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "#f0f0f7",
+    alignItems: "center",
+  },
+  detailsButton: {
+    backgroundColor: "#fff5f5",
+    padding: 6,
+    paddingLeft: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 4,
+    height: 36,
+  },
+  detailsButtonText: {
+    transform: [{ translateX: 0 }],
+    opacity: 1,
+    fontSize: 14,
+    marginVertical: 2,
+    fontWeight: "600",
+    letterSpacing: -0.5,
+    color: "#713",
+    marginRight: 8,
+  },
+  locationIcon: { marginRight: 4, marginTop: 2 },
+  markerIcon: { marginRight: 12, marginLeft: 4 },
+  stretch: { alignItems: "stretch" },
+});

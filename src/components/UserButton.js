@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 const VW = width / 100;
-export default React.memo(({ name, picture, location, onPress }) => {
+export default React.memo((props) => {
+  const { name, picture, location, onPress, index } = useMemo(() => props, []);
+
   return (
-    <TouchableOpacity onPress={() => onPress()} activeOpacity={0.7} style={{ ...styles.buttonContainer }}>
+    <TouchableOpacity onPress={() => onPress(index)} activeOpacity={0.7} style={styles.buttonContainer}>
       <Image source={{ uri: picture.medium }} style={styles.avatar} />
       <View style={styles.buttonTextContainer}>
         <View>
@@ -14,8 +16,8 @@ export default React.memo(({ name, picture, location, onPress }) => {
             {name.first} {name.last}
           </Text>
           <View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Ionicons name="ios-pin" size={12} color="#777" style={{ marginRight: 2 }} />
+            <View style={styles.subText}>
+              <Ionicons name="ios-pin" size={12} color="#777" style={styles.markerIcon} />
               <Text style={styles.userCity}>{location.city}</Text>
             </View>
           </View>
@@ -34,6 +36,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
+  },
+  subText: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
     width: 20 * VW,
@@ -56,4 +62,5 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
   },
+  markerIcon: { marginRight: 2 },
 });

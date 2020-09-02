@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-const statusList = ["Yükleniyor...", "Bağlandı", "Bağlantı Hatası", "Bağlanılamadı", "Bağlantı Koptu"];
+const statusList = ["Loading...", "Connected", "Connect error.", "Connect failed.", "Disconnected"];
 const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
 
 export default React.memo(({ status }) => (
-  <View style={{ ...styles.header }}>
-    <Text>Durum: {statusList[status]}</Text>
-    <View style={{ ...styles.info, backgroundColor: statusColors[status] }} />
+  <View style={styles.header}>
+    <Text>Status: {statusList[status]}</Text>
+    <View style={styles.info(statusColors[status])} />
   </View>
 ));
 
@@ -22,10 +22,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 
-  info: {
+  info: (backgroundColor) => ({
     width: 16,
     height: 16,
     borderRadius: 8,
     elevation: 3,
-  },
+    backgroundColor,
+  }),
 });

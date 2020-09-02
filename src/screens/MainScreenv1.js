@@ -1,5 +1,18 @@
+/**
+ * DEPRECATED
+ */
+
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import io from "socket.io-client";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
@@ -29,7 +42,13 @@ export default () => {
   const [status, setStatus] = useState(0);
   const [userList, setUserList] = useState([]);
   const [lastUser, setLastUser] = useState();
-  const statusList = ["Yükleniyor...", "Bağlandı", "Bağlantı Hatası", "Bağlanılamadı", "Bağlantı Koptu"];
+  const statusList = [
+    "Yükleniyor...",
+    "Bağlandı",
+    "Bağlantı Hatası",
+    "Bağlanılamadı",
+    "Bağlantı Koptu",
+  ];
   const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
   //Initialization and setup the socket
   useEffect(() => {

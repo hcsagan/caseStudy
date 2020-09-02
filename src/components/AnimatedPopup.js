@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+/**
+ * * This is the old version of popup animation.
+ * * Switched to React navigation modal type animation.
+ */
+import React, { useEffect, useRef, useMemo } from "react";
 import { TouchableOpacity, Dimensions } from "react-native";
-import Animated, { Value, timing, Easing, interpolate } from "react-native-reanimated";
+import Animated, { Value, timing, Easing } from "react-native-reanimated";
 import Popup from "../screens/PopupScreen";
 import { Ionicons } from "@expo/vector-icons";
 import PopupContainer from "./PopupContainer";
 const { width, height } = Dimensions.get("screen");
-const VW = width / 100;
-const VH = height / 100;
 
 const animConfig = {
   duration: 500,
@@ -14,14 +16,17 @@ const animConfig = {
   easing: Easing.in(Easing.cubic),
 };
 
+const closeDown = (popupValue) => {
+  return timing(popupValue, { duration: 500, toValue: 0, easing: Easing.out(Easing.cubic) });
+};
+
 const AnimatedPopup = ({ data, onPress }) => {
-  const popupValue = new Value(0);
+  //  const data = useMemo(() => user, [user]);
+  const popupValue = useRef(new Value(0)).current;
   useEffect(() => {
-    timing(popupValue, animConfig).start();
-  }, []);
-  const closeDown = () => {
-    return timing(popupValue, { duration: 500, toValue: 0, easing: Easing.out(Easing.cubic) });
-  };
+    data !== null && timing(popupValue, animConfig).start();
+  }, [data]);
+
   // console.log(data);
   return (
     <Animated.View
@@ -31,11 +36,11 @@ const AnimatedPopup = ({ data, onPress }) => {
         height,
         backgroundColor: "#0017",
         opacity: popupValue,
-        paddingTop: interpolate(popupValue, { inputRange: [0, 1], outputRange: [height, 0] }),
+        transform: [{ translateY: data === null ? height : 0 }],
       }}
     >
-      <PopupContainer>
-        {data && <Popup {...data} />}
+      <PopupContainer value={popupValue}>
+        {<Popup loaded={data === null ? false : true} {...data} />}
         <TouchableOpacity
           style={{
             position: "absolute",
@@ -48,7 +53,7 @@ const AnimatedPopup = ({ data, onPress }) => {
             justifyContent: "center",
             borderBottomLeftRadius: 16,
           }}
-          onPress={() => closeDown().start(onPress)}
+          onPress={() => closeDown(popupValue).start(onPress)}
         >
           <Ionicons name="ios-close" style={{ margin: 0 }} size={48} color="black" />
         </TouchableOpacity>

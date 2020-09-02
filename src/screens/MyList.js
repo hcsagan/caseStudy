@@ -1,35 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { View } from "react-native";
-import myList from "./allUsers";
 import UserList from "../components/UserList";
-import { Value, Easing, timing } from "react-native-reanimated";
 import AnimatedPopup from "../components/AnimatedPopup";
 import { SafeAreaView } from "react-native-safe-area-context";
+import data from "./allUsers.json";
 
-const animConfig = {
-  duration: 500,
-  toValue: 1,
-  easing: Easing.inOut(Easing.cubic),
-};
-
-export default () => {
-  console.log("main screen mounted");
-  const [activeIndex, setActiveIndex] = useState(-1);
-  // const popupValue = new Value(0);
-  // const anim = timing(popupValue, animConfig);
-  // const animBack = timing(popupValue, { ...animConfig, toValue: 0 });
-  const deactivate = async () => {
-    setTimeout(() => setActiveIndex(() => -1), 0);
-  };
-  // ! scroll to current active user when triggered.
-  // useEffect(() => {
-  //   activeIndex !== -1 && anim.start();
-  // }, [activeIndex]);
+export default ({ navigation }) => {
+  // console.log(navigation);
+  // const myList = useMemo(() => data, []);
+  // const [activeIndex, setActiveIndex] = useState(-1);
+  const activate = useCallback((index) => {
+    //setActiveIndex(index);
+    navigation.navigate("Modal", { data: data[index] });
+  }, []);
+  // const deactivate = useCallback(() => {
+  //   //setTimeout(() => setActiveIndex(() => -1), 0);
+  // }, [setActiveIndex]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <UserList data={myList} onPress={setActiveIndex} local={true} />
-      {activeIndex !== -1 && <AnimatedPopup data={{ ...myList[activeIndex] }} onPress={deactivate} />}
-    </SafeAreaView>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <UserList data={data} onPress={activate} local={true} />
+      {/* {activeIndex !== -1 && <AnimatedPopup data={myList[activeIndex]} onPress={deactivate} />} */}
+    </View>
   );
 };

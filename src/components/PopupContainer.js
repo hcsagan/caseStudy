@@ -1,28 +1,32 @@
-import React from "react";
+//! DEPRECATED
+import React, { useMemo } from "react";
 import { View, Dimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-export default React.memo((props) => {
-  const insets = useSafeAreaInsets();
+import Animated from "react-native-reanimated";
+export default (attrs) => {
+  const props = useMemo(() => attrs, [attrs]);
   return (
-    <View
-      style={{
-        marginHorizontal: Dimensions.get("window").width * 0.05,
-        marginTop: insets.top,
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "#fff",
-          borderRadius: 12,
-          overflow: "hidden",
-          ...boxShadow,
-        }}
-      >
-        {props.children}
-      </View>
-    </View>
+    <Animated.View style={styles.container(props.value)}>
+      <View style={styles.wrapper}>{props.children}</View>
+    </Animated.View>
   );
-});
+};
+const styles = {
+  container: (value) => ({
+    width: Math.round(Dimensions.get("window").width * 0.9),
+    marginLeft: Dimensions.get("window").width * 0.05,
+    transform: [
+      {
+        translateY: Animated.interpolate(value, {
+          inputRange: [0, 1],
+          outputRange: [Dimensions.get("screen").height, 0],
+        }),
+      },
+    ],
+  }),
+  wrapper: {
+    backgroundColor: "#fff",
+  },
+};
 const boxShadow = {
   shadowColor: "#000",
   shadowOffset: {
