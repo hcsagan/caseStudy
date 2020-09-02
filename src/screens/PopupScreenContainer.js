@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Dimensions, StyleSheet, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import PopupScreen from "./PopupScreen";
@@ -13,6 +13,7 @@ export default React.memo(({ route, navigation }) => {
       <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
         <Ionicons name="ios-close" style={styles.closeIcon} size={48} color="black" />
       </TouchableOpacity>
+      <StatusBar barStyle="light-content" />
     </View>
   );
 });
