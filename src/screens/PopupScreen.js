@@ -1,34 +1,34 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Animated, Dimensions, StyleSheet, Text, View, ActivityIndicator } from "react-native";
-import { Path, Svg } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
-import ContactDetails from "../components/ContactDetails";
+import { Path, Svg } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ContactDetails from "../components/ContactDetails";
 import MapSection from "../components/MapSection";
-const { width, height } = Dimensions.get("window");
-import { StatusBar } from "expo-status-bar";
-const VW = width / 100;
-const VH = height / 100;
+
+const { width } = Dimensions.get("window");
+const VW = width / 100; // not volkswagen :) it is viewport width.
+
 const Icon = ({ name, size = 16, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
   <Ionicons style={iconStyle} name={name} size={size} color={color} />
 );
+
 const Name = ({ name }) => (
-  <View style={{ flexDirection: "column", width: "75%" }}>
-    <Text adjustsFontSizeToFit={true} style={{ ...styles.nameText, ...styles.text }}>
+  <View style={styles.nameContainer}>
+    <Text adjustsFontSizeToFit={true} style={[styles.nameText, styles.text]}>
       {name.first} {name.last}
     </Text>
   </View>
 );
+
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
-const App = ({ loaded, gender, name, dob, email, cell, phone, picture, location }) => {
-  if (!loaded) return null;
+
+const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [load, setLoad] = useState(false);
   const insets = useSafeAreaInsets();
 
-  // setLoad((load) => {
-  //   if (load === false) return true;
-  // });
+  // * Delaying the contact and mapview sections
   useEffect(() => {
     setLoad(true);
   }, []);
@@ -53,23 +53,13 @@ const App = ({ loaded, gender, name, dob, email, cell, phone, picture, location 
         </AnimatedSvg>
         <Animated.View style={styles.content(scrollY)}>
           <View style={styles.titleContainer}>
-            <Animated.Text
-              style={{
-                ...styles.nameText,
-                ...styles.text,
-                fontWeight: "100",
-                opacity: scrollY.interpolate({
-                  inputRange: [0, width * 0.45],
-                  outputRange: [1, 0],
-                }),
-              }}
-            >
+            <Animated.Text style={[styles.nameText, styles.text, styles.title(scrollY)]}>
               {name.title}
             </Animated.Text>
           </View>
-          <View style={styles.nameContainer}>
+          <View style={styles.nameSection}>
             <Name name={name} />
-            <View style={{ width: "25%", flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+            <View style={styles.genderAndAge}>
               <Icon name={`ios-${gender}`} size={24} color={gender === "male" ? "#059" : "#faf"} />
               <Text style={[styles.text, { fontSize: 24 }]}>{dob.age}</Text>
             </View>
@@ -88,7 +78,7 @@ const App = ({ loaded, gender, name, dob, email, cell, phone, picture, location 
 };
 
 const mask = {
-  width: 90 * VW + StyleSheet.hairlineWidth,
+  width: Math.floor(90 * VW),
   height: 50,
   bgColor: "#fff",
 };
@@ -134,7 +124,14 @@ const styles = StyleSheet.create({
       },
     ],
   }),
-  nameContainer: {
+  title: (scrollY) => ({
+    fontWeight: "100",
+    opacity: scrollY.interpolate({
+      inputRange: [0, width * 0.45],
+      outputRange: [1, 0],
+    }),
+  }),
+  nameSection: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -142,11 +139,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingBottom: 16,
     marginBottom: 16,
-    // overflow: "hidden",
   },
   nameText: {
     fontSize: 24,
     fontWeight: "400",
+  },
+  nameContainer: { flexDirection: "column", width: "75%" },
+  genderAndAge: {
+    width: "25%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   content: (scrollY) => ({
     paddingHorizontal: 16,

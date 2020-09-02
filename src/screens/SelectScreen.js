@@ -17,20 +17,8 @@ const Button = ({ label, icon, fontColor, reverse, onPress, description }) => {
 };
 export default ({ navigation: { navigate } }) => {
   return (
-    <View style={{ flex: 1, alignItems: "center", backgroundColor: "#dedede", justifyContent: "center" }}>
-      <Text
-        style={{
-          fontWeight: "500",
-          fontSize: 14,
-          alignSelf: "flex-start",
-          marginHorizontal: "10%",
-          marginBottom: 12,
-          marginTop: -28,
-          color: "#557",
-        }}
-      >
-        Please select one of the following options:
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.chooseText}>Please select one of the following options:</Text>
       <Button
         onPress={() => navigate("Online List")}
         label="Online List"
@@ -51,6 +39,12 @@ export default ({ navigation: { navigate } }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#dedede",
+    justifyContent: "center",
+  },
   button: {
     width: "80%",
     backgroundColor: "#fff",
@@ -87,4 +81,13 @@ const styles = StyleSheet.create({
     marginTop: 12,
     alignSelf: reverse === true ? "flex-end" : null,
   }),
+  chooseText: {
+    fontWeight: "500",
+    fontSize: 14,
+    alignSelf: "flex-start",
+    marginHorizontal: "10%",
+    marginBottom: 12,
+    marginTop: -28,
+    color: "#557",
+  },
 });

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 const statusList = ["Loading...", "Connected", "Connect error.", "Connect failed.", "Disconnected"];
 const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
 

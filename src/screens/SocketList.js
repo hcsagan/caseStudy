@@ -7,8 +7,6 @@ import io from "socket.io-client";
 import UserList from "../components/UserList";
 import ConnectionStatus from "../components/ConnectionStatus";
 import { SafeAreaView } from "react-native-safe-area-context";
-// ! DEPRECATED
-// import AnimatedPopup from "../components/AnimatedPopup";
 
 const LIMIT = 20;
 
@@ -16,8 +14,6 @@ export default ({ navigation }) => {
   const [status, setStatus] = useState(0);
   const [userList, setUserList] = useState([]);
   const [lastUser, setLastUser] = useState();
-  // ! DEPRECATED
-  // const [shownPopup, setShownPopup] = useState(false);
 
   // Initialization and setup the socket
   useEffect(() => {
@@ -41,6 +37,7 @@ export default ({ navigation }) => {
       setStatus(4);
     };
   }, []);
+
   //update the user list, and limit the users at some point
   useEffect(() => {
     if (lastUser !== undefined && !userList.includes(lastUser)) {
@@ -51,30 +48,18 @@ export default ({ navigation }) => {
     }
   }, [lastUser]);
 
-  // self explaining
+  // sending the selected user's data to popup screen
   const openPopup = useCallback(
     (index) => {
-      // setShownPopup(userList[index]);
       navigation.navigate("Modal", { data: userList[index] });
     },
     [userList]
   );
 
-  // ! DEPRECATED, don't need to use
-  /* const closePopup = useCallback(() => {
-    setShownPopup(false);
-  }, []); */
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ConnectionStatus status={status} />
       <UserList data={userList} socket={true} onPress={openPopup} />
-      {/* 
-        There is a difference between this one and local list which is the data.
-        I set current open popup on seperate state because
-        it causes re-render in all userList related components when new data comes from socket 
-       */}
-      {/* {shownPopup && <AnimatedPopup data={shownPopup} onPress={closePopup} />} */}
     </SafeAreaView>
   );
 };

@@ -1,12 +1,11 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import MyList from "./src/screens/MyList";
 import SocketList from "./src/screens/SocketList";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import SelectScreen from "./src/screens/SelectScreen";
-import Popup from "./src/screens/PopupContainerScreen";
+import Popup from "./src/screens/PopupScreenContainer";
 import { enableScreens } from "react-native-screens";
 
 enableScreens();
