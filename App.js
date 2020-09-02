@@ -41,12 +41,14 @@ export default function App() {
                   translateY: progress.interpolate({
                     inputRange: [0, 1],
                     outputRange: [1000, 0],
+                    extrapolateLeft: "clamp",
                   }),
                 },
                 {
                   scale: progress.interpolate({
                     inputRange: [0, 1],
                     outputRange: [0.25, 1],
+                    extrapolateLeft: "clamp",
                   }),
                 },
               ],
