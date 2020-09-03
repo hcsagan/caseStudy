@@ -14,7 +14,7 @@ export default React.memo(({ route, navigation }) => {
       <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
         <Ionicons name="ios-close" style={styles.closeIcon} size={48} color="black" />
       </TouchableOpacity>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor="black" />
     </View>
   );
 });

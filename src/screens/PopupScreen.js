@@ -24,10 +24,17 @@ const Name = ({ name }) => (
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
-  const scrollY = useRef(new Animated.Value(0)).current;
   const [load, setLoad] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
-
+  const scrollHandler = Animated.event(
+    [
+      {
+        nativeEvent: { contentOffset: { y: scrollY } },
+      },
+    ],
+    { useNativeDriver: true }
+  );
   // * Delaying the contact and mapview sections
   useEffect(() => {
     setLoad(true);
@@ -35,15 +42,8 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
 
   return (
     <Animated.ScrollView
-      style={{ height: Dimensions.get("window").height - (insets.top + insets.bottom + 5 * VW) }}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: { contentOffset: { y: scrollY } },
-          },
-        ],
-        { useNativeDriver: true }
-      )}
+      style={styles.scrollView(insets)}
+      onScroll={scrollHandler}
       scrollEventThrottle={16}
     >
       <View style={styles.container}>
@@ -84,6 +84,9 @@ const mask = {
 };
 
 const styles = StyleSheet.create({
+  scrollView: ({ top, bottom }) => ({
+    height: Dimensions.get("window").height - (top + bottom + 5 * VW),
+  }),
   text: {
     color: "#556",
   },

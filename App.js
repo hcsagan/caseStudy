@@ -25,7 +25,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        mode="Modal"
+        mode="modal"
         screenOptions={{
           headerShown: false,
           cardStyle: { backgroundColor: "transparent" },
@@ -56,7 +56,7 @@ export default function App() {
             overlayStyle: {
               opacity: progress.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, 0.6],
+                outputRange: [0, 0.25],
                 extrapolate: "clamp",
               }),
             },

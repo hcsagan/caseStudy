@@ -31,7 +31,10 @@ export default ({ location, styles: style }) => {
   // ! What I did here is, just check if region is different than user's location.
   // ! If, it is different, just make marker icon red, if it's not, turn back to grey
   const regionCheck = ({ latitude, longitude }) => {
-    if (Math.abs(coordinates.longitude - longitude) > 0.3 || Math.abs(coordinates.latitude - latitude) > 0.18) {
+    if (
+      Math.abs(coordinates.longitude - longitude) > 0.3 ||
+      Math.abs(coordinates.latitude - latitude) > 0.18
+    ) {
       backToPosition === false && setBackToPosition(true);
     } else {
       backToPosition === true && setBackToPosition(false);
@@ -45,7 +48,10 @@ export default ({ location, styles: style }) => {
       <View style={styles.mapContainer}>
         <Text style={[style.text, style.heading]}>LOCATION</Text>
         <Animated.View style={{ opacity }}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => mapRef.current.animateToRegion(region)}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => mapRef.current.animateToRegion(region)}
+          >
             <View style={styles.detailsButton}>
               <Text style={styles.detailsButtonText}>RESET</Text>
               <View>
@@ -56,7 +62,7 @@ export default ({ location, styles: style }) => {
         </Animated.View>
       </View>
 
-      <View style={[style.contact, styles.stretch]}>
+      <View style={[style.contact, styles.stretch, styles.addressWrapper]}>
         <Ionicons name="ios-pin" size={20} color="#be3a3a" style={styles.markerIcon} />
         <View>
           {light(location.street.name + ", Nr. " + location.street.number)}
@@ -80,6 +86,9 @@ export default ({ location, styles: style }) => {
 
 const styles = StyleSheet.create({
   container: { marginTop: 8 },
+  addressWrapper: {
+    marginTop: -8,
+  },
   mapContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
