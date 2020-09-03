@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 import UserList from "../components/UserList";
 import ConnectionStatus from "../components/ConnectionStatus";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 const LIMIT = 20;
 
@@ -57,9 +57,9 @@ export default ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ConnectionStatus status={status} />
       <UserList data={userList} socket={true} onPress={openPopup} />
-    </SafeAreaView>
+    </View>
   );
 };

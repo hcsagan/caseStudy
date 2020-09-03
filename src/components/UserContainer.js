@@ -9,7 +9,10 @@ import { View, StyleSheet, Dimensions } from "react-native";
 export default React.memo(({ gender, children, key }) => {
   return (
     <View style={[styles.container, boxShadow]}>
-      <LinearGradient colors={[gender === "male" ? "#f7f7ffff" : "#fff8ffff", "#fff"]} style={{ ...styles.bg }}>
+      <LinearGradient
+        colors={[gender === "male" ? "#f7f7ffff" : "#fff8ffff", "#fff"]}
+        style={{ ...styles.bg }}
+      >
         {children}
       </LinearGradient>
     </View>
@@ -32,7 +35,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     borderRadius: 12,
-    margin: Dimensions.get("window").width * 0.03,
+    marginHorizontal: Dimensions.get("window").width * 0.03,
+    marginTop: Dimensions.get("window").width * 0.06,
     borderRadius: 12,
   },
   bg: {

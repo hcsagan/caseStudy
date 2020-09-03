@@ -14,10 +14,10 @@ const RootStack = createStackNavigator();
 const Stack = createStackNavigator();
 
 const MainNavigator = () => (
-  <Stack.Navigator>
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Select Screen" component={SelectScreen} />
-    <Stack.Screen name="Local List" component={MyList} options={{ headerShown: false }} />
-    <Stack.Screen name="Online List" component={SocketList} options={{ headerShown: false }} />
+    <Stack.Screen name="Local List" component={MyList} />
+    <Stack.Screen name="Online List" component={SocketList} />
   </Stack.Navigator>
 );
 

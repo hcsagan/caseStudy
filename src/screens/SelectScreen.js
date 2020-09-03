@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
 import { Entypo } from "@expo/vector-icons";
+import Header from "../components/Header";
 
 const Button = ({ label, icon, fontColor, reverse, onPress, description }) => {
   return (
@@ -15,9 +16,13 @@ const Button = ({ label, icon, fontColor, reverse, onPress, description }) => {
     </TouchableOpacity>
   );
 };
+
 export default ({ navigation: { navigate } }) => {
   return (
     <View style={styles.container}>
+      <Header>
+        <Text style={styles.text}>Selection Screen</Text>
+      </Header>
       <Text style={styles.chooseText}>Please select one of the following options:</Text>
       <Button
         onPress={() => navigate("Online List")}
@@ -34,6 +39,7 @@ export default ({ navigation: { navigate } }) => {
         icon="drive"
         fontColor="#936"
       />
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
     </View>
   );
 };
@@ -89,5 +95,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: -28,
     color: "#557",
+  },
+  text: {
+    fontSize: 18,
+    textAlign: "center",
+    flex: 1,
+    lineHeight: 38,
   },
 });
