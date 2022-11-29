@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import IconButton from "./IconButton";
-import Animated, { interpolate, Extrapolate, Easing, Value, timing, set } from "react-native-reanimated";
+import Animated, { interpolateNode, Extrapolate, EasingNode, Value, timing, set } from "react-native-reanimated";
 import { transformOrigin } from "react-native-redash";
 const Icon = ({ name, size = 18, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
   <Ionicons style={iconStyle} name={name} size={size} color={color} />
@@ -12,12 +12,12 @@ const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text
 const openConfig = {
   toValue: 1,
   duration: 500,
-  easing: Easing.in(Easing.sin),
+  easing: EasingNode.in(EasingNode.sin),
 };
 const closeConfig = {
   toValue: 0,
   duration: 500,
-  easing: Easing.out(Easing.sin),
+  easing: EasingNode.out(EasingNode.sin),
 };
 export default ({ email, cell, phone }) => {
   const transition = useRef(new Value(0)).current;
@@ -29,7 +29,7 @@ export default ({ email, cell, phone }) => {
   const animate = (action) => {
     timing(transition, action).start();
   };
-  const rotate = interpolate(transition, {
+  const rotate = interpolateNode(transition, {
     inputRange: [0.2, 0.8],
     outputRange: [0, -Math.PI / 2],
     extrapolate: Extrapolate.CLAMP,

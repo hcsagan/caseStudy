@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, StyleSheet, Text, Dimensions, Linking, Clipboard, Alert } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-import Animated, { interpolate, Extrapolate, sub } from "react-native-reanimated";
+import Animated, { interpolateNode, Extrapolate, sub } from "react-native-reanimated";
 const { width } = Dimensions.get("screen");
 const areaWidth = width * 0.7 - 32;
 const Icon = React.memo(({ name, size = 36, color }) => {
@@ -16,34 +16,34 @@ export default React.memo(({ text, link, icon, iconColor, open: transition, inde
 
   const posX = (areaWidth * index) / 2 + width * 0.05;
   // Icon positioning (Y-Axis)
-  const positionY = interpolate(transition, {
+  const positionY = interpolateNode(transition, {
     inputRange: [0, 0.6],
     outputRange: [20, index * 30],
     extrapolate: Extrapolate.CLAMP,
   });
   //(X-Axis)
-  const positionX = interpolate(transition, {
+  const positionX = interpolateNode(transition, {
     inputRange: [0.2, 0.6],
     outputRange: [posX, 0],
     extrapolate: Extrapolate.CLAMP,
   });
 
   //Text opacity
-  const opacity = interpolate(transition, {
+  const opacity = interpolateNode(transition, {
     inputRange: [0.8, 1],
     outputRange: [0, 1],
     extrapolate: Extrapolate.CLAMP,
   });
 
   //icon scaling
-  const scale = interpolate(transition, {
+  const scale = interpolateNode(transition, {
     inputRange: [0, 0.2],
     outputRange: [1, 0.5],
     extrapolate: Extrapolate.CLAMP,
   });
 
   //Text opacity (for the ones under icons)
-  const iconTextOpacity = interpolate(transition, {
+  const iconTextOpacity = interpolateNode(transition, {
     inputRange: [0, 0.2],
     outputRange: [1, 0],
     extrapolate: Extrapolate.CLAMP,
@@ -58,7 +58,7 @@ export default React.memo(({ text, link, icon, iconColor, open: transition, inde
   const texts = ["GSM", "Phone", "Mail"]; //* titles for icon actions
 
   //color transition: had to do it this way, a grey icon on top of the colored one.
-  const greyOpacity = interpolate(transition, {
+  const greyOpacity = interpolateNode(transition, {
     inputRange: [0, 0.2],
     outputRange: [0, 1],
     extrapolate: Extrapolate.CLAMP,

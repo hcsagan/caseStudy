@@ -4,7 +4,7 @@ import MapView, { Marker } from "react-native-maps";
 import { default as mapViewStyle } from "../mapStyle.json";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { useTransition } from "react-native-redash";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated, { EasingNode } from "react-native-reanimated";
 
 const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
@@ -12,7 +12,7 @@ export default ({ location, styles: style }) => {
   const [backToPosition, setBackToPosition] = useState(false);
   const opacity = useTransition(backToPosition, {
     duration: 200,
-    easing: Easing.in(Easing.circle),
+    easing: EasingNode.in(EasingNode.circle),
   });
   // const opacity = interpolate(transition, {
   //   inputRange: [0, 1],
