@@ -26,11 +26,12 @@ const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
   const [load, setLoad] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollX = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
   const scrollHandler = Animated.event(
     [
       {
-        nativeEvent: { contentOffset: { y: scrollY } },
+        nativeEvent: { contentOffset: { y: scrollY, x: scrollX } },
       },
     ],
     { useNativeDriver: true }
@@ -44,9 +45,10 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
     <Animated.ScrollView
       style={styles.scrollView(insets)}
       onScroll={scrollHandler}
+      directionalLockEnabled
       scrollEventThrottle={16}
     >
-      <View style={styles.container}>
+      <Animated.View style={styles.container(scrollX)}>
         <Animated.Image style={styles.image(scrollY)} source={{ uri: picture.large }} />
         <AnimatedSvg viewBox="0 0 100 100" style={styles.mask(scrollY)}>
           <Path d="M-1 100.125V87C31.1713 102.77 68.8287 102.77 101 87V100.125H-1Z" fill="white" />
@@ -72,7 +74,7 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
             </>
           )}
         </Animated.View>
-      </View>
+      </Animated.View>
     </Animated.ScrollView>
   );
 };
@@ -90,10 +92,15 @@ const styles = StyleSheet.create({
   text: {
     color: "#556",
   },
-  container: {
+  container: (scrollX) => ({
     flex: 1,
     paddingBottom: 16,
-  },
+    transform: [
+      {
+        translateX: scrollX
+      }
+    ]
+  }),
   mask: (scrollY) => ({
     width: Math.round(90 * VW),
     height: Math.round(90 * VW),
