@@ -3,7 +3,8 @@ import { View, TouchableOpacity, Dimensions, StyleSheet, StatusBar } from "react
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import PopupScreen from "./PopupScreen";
-const { width } = Dimensions.get("window");
+
+const { width: VIEWPORT_WIDTH } = Dimensions.get("window");
 
 export default React.memo(({ route, navigation }) => {
   const { data } = route.params;
@@ -27,10 +28,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     backgroundColor: "white",
-    marginTop: top + width * 0.01,
-    marginBottom: bottom + width * 0.05,
-    marginLeft: left + width * 0.05,
-    marginRight: right + width * 0.05,
+    marginTop: top + VIEWPORT_WIDTH * 0.01,
+    marginBottom: bottom + VIEWPORT_WIDTH * 0.05,
+    marginLeft: left + VIEWPORT_WIDTH * 0.05,
+    marginRight: right + VIEWPORT_WIDTH * 0.05,
   }),
   closeButton: {
     position: "absolute",

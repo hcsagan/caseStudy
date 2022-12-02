@@ -9,19 +9,23 @@ import Animated, { EasingNode } from "react-native-reanimated";
 const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
 export default ({ location, styles: style }) => {
-  const [backToPosition, setBackToPosition] = useState(false);
-  const opacity = useTransition(backToPosition, {
+  const [showResetMap, setShowResetMap] = useState(false);
+
+  const opacity = useTransition(showResetMap, {
     duration: 200,
     easing: EasingNode.in(EasingNode.circle),
   });
+
   // const opacity = interpolate(transition, {
   //   inputRange: [0, 1],
   //   outputRange: [0, 1],
   // });
+
   const coordinates = {
     latitude: parseFloat(location.coordinates.latitude),
     longitude: parseFloat(location.coordinates.longitude),
   };
+
   const region = {
     ...coordinates,
     latitudeDelta: 0.5,
@@ -35,14 +39,14 @@ export default ({ location, styles: style }) => {
       Math.abs(coordinates.longitude - longitude) > 0.3 ||
       Math.abs(coordinates.latitude - latitude) > 0.18
     ) {
-      backToPosition === false && setBackToPosition(true);
+      showResetMap === false && setShowResetMap(true);
     } else {
-      backToPosition === true && setBackToPosition(false);
+      showResetMap === true && setShowResetMap(false);
     }
-
-    //console.warn(`${latitude} ${longitude}`);
   };
+
   const mapRef = useRef();
+
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>

@@ -3,11 +3,11 @@ import { Animated, Dimensions, StyleSheet, Text, View, ActivityIndicator } from 
 import { Ionicons } from "@expo/vector-icons";
 import { Path, Svg } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ContactDetails from "../components/ContactDetails";
-import MapSection from "../components/MapSection";
+import ContactDetails from "./components/ContactDetails";
+import MapSection from "../../components/MapSection";
 
 const { width } = Dimensions.get("window");
-const VW = width / 100; // not volkswagen :) it is viewport width.
+const VIEWPORT_WIDTH = width / 100;
 
 const Icon = ({ name, size = 16, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
   <Ionicons style={iconStyle} name={name} size={size} color={color} />
@@ -23,11 +23,13 @@ const Name = ({ name }) => (
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
-const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
+const SocketList = ({ gender, name, dob, email, cell, phone, picture, location }) => {
   const [load, setLoad] = useState(false);
+  const insets = useSafeAreaInsets();
+
   const scrollY = useRef(new Animated.Value(0)).current;
   const scrollX = useRef(new Animated.Value(0)).current;
-  const insets = useSafeAreaInsets();
+
   const scrollHandler = Animated.event(
     [
       {
@@ -36,6 +38,7 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
     ],
     { useNativeDriver: true }
   );
+
   // * Delaying the contact and mapview sections
   useEffect(() => {
     setLoad(true);
@@ -80,14 +83,14 @@ const App = ({ gender, name, dob, email, cell, phone, picture, location }) => {
 };
 
 const mask = {
-  width: Math.floor(90 * VW),
+  width: Math.floor(90 * VIEWPORT_WIDTH),
   height: 50,
   bgColor: "#fff",
 };
 
 const styles = StyleSheet.create({
   scrollView: ({ top, bottom }) => ({
-    height: Dimensions.get("window").height - (top + bottom + 5 * VW),
+    height: Dimensions.get("window").height - (top + bottom + 5 * VIEWPORT_WIDTH),
   }),
   text: {
     color: "#556",
@@ -102,8 +105,8 @@ const styles = StyleSheet.create({
     ]
   }),
   mask: (scrollY) => ({
-    width: Math.round(90 * VW),
-    height: Math.round(90 * VW),
+    width: Math.round(90 * VIEWPORT_WIDTH),
+    height: Math.round(90 * VIEWPORT_WIDTH),
     position: "absolute",
     transform: [
       {
@@ -116,8 +119,8 @@ const styles = StyleSheet.create({
   }),
   image: (scrollY) => ({
     top: 0,
-    width: Math.round(90 * VW),
-    height: Math.round(90 * VW),
+    width: Math.round(90 * VIEWPORT_WIDTH),
+    height: Math.round(90 * VIEWPORT_WIDTH),
     zIndex: -1,
     transform: [
       {
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   },
   mapStyle: {
     width: "100%",
-    height: 50 * VW,
+    height: 50 * VIEWPORT_WIDTH,
   },
   heading: {
     fontWeight: "800",
@@ -195,4 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(App);
+export default React.memo(SocketList);

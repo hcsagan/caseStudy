@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import BackButton from "./BackButton";
+import { View, Text, StyleSheet } from "react-native";
 import Header from "./Header";
 
 const statusList = ["Loading...", "Connected", "Connect error.", "Connect failed.", "Disconnected"];

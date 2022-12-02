@@ -1,14 +1,17 @@
 import React from "react";
-import MyList from "./src/screens/MyList";
-import SocketList from "./src/screens/SocketList";
+import LocalList from "./src/pages/LocalList";
+import SocketList from "./src/pages/SocketList";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import SelectScreen from "./src/screens/SelectScreen";
-import Popup from "./src/screens/PopupScreenContainer";
+import SelectScreen from "./src/pages/SelectScreen";
+import PopupScreen from "./src/pages/PopupScreen/PopupScreenContainer";
 import { enableScreens } from "react-native-screens";
+import { Dimensions } from "react-native";
 
 enableScreens();
+
+const { height: VIEWPORT_HEIGHT } = Dimensions.get('window');
 
 const RootStack = createStackNavigator();
 const Stack = createStackNavigator();
@@ -16,7 +19,7 @@ const Stack = createStackNavigator();
 const MainNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Select Screen" component={SelectScreen} />
-    <Stack.Screen name="Local List" component={MyList} />
+    <Stack.Screen name="Local List" component={LocalList} />
     <Stack.Screen name="Online List" component={SocketList} />
   </Stack.Navigator>
 );
@@ -32,22 +35,19 @@ export default function App() {
           cardOverlayEnabled: true,
           cardStyleInterpolator: ({ current: { progress } }) => ({
             cardStyle: {
-              opacity: progress.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
+              opacity: progress,
               transform: [
                 {
                   translateY: progress.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [1000, 0],
+                    outputRange: [VIEWPORT_HEIGHT, 0],
                     extrapolateLeft: "clamp",
                   }),
                 },
                 {
                   scale: progress.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [0.25, 1],
+                    outputRange: [0.5, 1],
                     extrapolateLeft: "clamp",
                   }),
                 },
@@ -64,7 +64,7 @@ export default function App() {
         }}
       >
         <RootStack.Screen name="Main" component={MainNavigator} />
-        <RootStack.Screen name="Modal" component={Popup} />
+        <RootStack.Screen name="Modal" component={PopupScreen} />
       </RootStack.Navigator>
     </NavigationContainer>
   );

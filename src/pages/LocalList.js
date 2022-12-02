@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import UserList from "../components/UserList";
 import data from "../allUsers.json";
 import Header from "../components/Header";
@@ -8,12 +8,23 @@ export default ({ navigation }) => {
   const openPopup = useCallback((index) => {
     navigation.navigate("Modal", { data: data[index] });
   }, []);
+  
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={styles.container}>
       <Header back>
-        <Text style={{ fontSize: 18 }}>Local List</Text>
+        <Text style={styles.title}>Local List</Text>
       </Header>
       <UserList data={data} onPress={openPopup} local={true} header={true} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff"
+  },
+  title: {
+    fontSize: 18
+  },
+});

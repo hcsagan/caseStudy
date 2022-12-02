@@ -5,6 +5,7 @@ import BackButton from "./BackButton";
 
 const Header = ({ children, back = false }) => {
   const { top } = useSafeAreaInsets();
+
   return (
     <View style={styles.container(top)}>
       {back && <BackButton />}

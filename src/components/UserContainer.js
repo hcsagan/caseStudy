@@ -6,7 +6,7 @@ import { View, StyleSheet, Dimensions } from "react-native";
   ! I could use just linear gradient component but it doesn't support shadow in ios, 
   ! so I just wrapped it with View element. 
 */
-export default React.memo(({ gender, children, key }) => {
+export default React.memo(({ gender, children }) => {
   return (
     <View style={[styles.container, boxShadow]}>
       <LinearGradient

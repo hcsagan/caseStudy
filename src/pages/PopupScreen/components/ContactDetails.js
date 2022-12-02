@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
-import IconButton from "./IconButton";
-import Animated, { interpolateNode, Extrapolate, EasingNode, Value, timing, set } from "react-native-reanimated";
+import { Entypo } from "@expo/vector-icons";
+import IconButton from "../../../components/IconButton";
+import Animated, { interpolateNode, Extrapolate, EasingNode, Value, timing } from "react-native-reanimated";
 import { transformOrigin } from "react-native-redash";
-const Icon = ({ name, size = 18, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
-  <Ionicons style={iconStyle} name={name} size={size} color={color} />
-);
-const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
 const openConfig = {
   toValue: 1,
   duration: 500,
   easing: EasingNode.in(EasingNode.sin),
 };
+
 const closeConfig = {
   toValue: 0,
   duration: 500,
   easing: EasingNode.out(EasingNode.sin),
 };
+
 export default ({ email, cell, phone }) => {
   const transition = useRef(new Value(0)).current;
   const [open, setOpen] = useState(false);
@@ -26,19 +24,23 @@ export default ({ email, cell, phone }) => {
   useEffect(() => {
     open !== 0 && animate(open ? openConfig : closeConfig);
   }, [open]);
+  
   const animate = (action) => {
     timing(transition, action).start();
   };
+
   const rotate = interpolateNode(transition, {
     inputRange: [0.2, 0.8],
     outputRange: [0, -Math.PI / 2],
     extrapolate: Extrapolate.CLAMP,
   });
+
   const links = [
-    { index: 0, text: cell, link: `tel:${cell}`, icon: "ios-call", iconColor: "#4c7" },
-    { index: 1, text: phone, link: `tel:${phone}`, icon: "old-phone", iconColor: "#fa5" },
-    { index: 2, text: email, link: `mailto:${email}`, icon: "ios-mail", iconColor: "#5af" },
+    { text: cell, link: `tel:${cell}`, icon: "ios-call", iconColor: "#4c7", type: "GSM" },
+    { text: phone, link: `tel:${phone}`, icon: "old-phone", iconColor: "#fa5", type: "Phone" },
+    { text: email, link: `mailto:${email}`, icon: "ios-mail", iconColor: "#5af", type: "Mail" },
   ];
+
   return (
     <View>
       <View style={styles.headerWrapper}>
@@ -53,8 +55,8 @@ export default ({ email, cell, phone }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.iconContainer}>
-        {links.map((item) => (
-          <IconButton {...item} open={transition} key={item.index} />
+        {links.map((item, index) => (
+          <IconButton {...item} index={index} open={transition} key={index.toString()} />
         ))}
       </View>
     </View>

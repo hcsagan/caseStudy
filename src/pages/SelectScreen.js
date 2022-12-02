@@ -9,7 +9,7 @@ const Button = ({ label, icon, fontColor, reverse, onPress, description }) => {
       <View style={styles.header(reverse)}>
         <Text style={styles.headerText(fontColor)}>{label}</Text>
         <View style={styles.iconWrapper(fontColor)}>
-          <Entypo name={icon} size={24} color="white" style={{ width: 24, height: 24 }} />
+          <Entypo name={icon} size={24} color="white" style={styles.icon} />
         </View>
       </View>
       <Text style={styles.description(reverse)}>{description}</Text>
@@ -35,7 +35,7 @@ export default ({ navigation: { navigate } }) => {
       <Button
         onPress={() => navigate("Local List")}
         label="Local List"
-        description="Useful when connection could not establish with socket."
+        description="Useful when socket connection is not available."
         icon="drive"
         fontColor="#936"
       />
@@ -102,4 +102,8 @@ const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 38,
   },
+  icon: {
+    width: 24,
+    height: 24
+  }
 });

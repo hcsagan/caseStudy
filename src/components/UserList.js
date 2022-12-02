@@ -6,15 +6,11 @@ import NoUser from "./NoUser";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default React.memo(({ data, onPress }) => {
-  const { top, bottom } = useSafeAreaInsets();
-  const insets = {
-    top,
-    bottom,
-  };
+  const insets = useSafeAreaInsets();
+
   const renderItem = ({ item, index }) => (
     <UserContainer gender={item.gender}>
       <UserButton
-        data={item}
         name={item.name}
         location={item.location}
         picture={item.picture}
@@ -37,5 +33,10 @@ export default React.memo(({ data, onPress }) => {
 
 const styles = StyleSheet.create({
   list: { backgroundColor: "#f5f5f9" },
-  listContainer: ({ top, bottom }) => ({ paddingTop: top + 56, paddingBottom: bottom + 20 }),
+  listContainer: ({ top, bottom, left, right }) => ({
+    paddingTop: top + 56,
+    paddingBottom: bottom + 20,
+    paddingLeft: left,
+    paddingRight: right
+  }),
 });
