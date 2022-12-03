@@ -1,5 +1,17 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+} from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { Entypo } from "@expo/vector-icons";
 import Header from "../components/Header";
 
@@ -18,36 +30,57 @@ const Button = ({ label, icon, fontColor, reverse, onPress, description }) => {
 };
 
 export default ({ navigation: { navigate } }) => {
+  const backgroundColor = useSharedValue("#dedede");
+
+  const containerStyle = useAnimatedStyle(() => ({
+    backgroundColor: backgroundColor.value,
+  }));
+
+  useEffect(() => {
+    backgroundColor.value = withRepeat(
+      withTiming("#fafafa", {
+        duration: 5000,
+      }),
+      0,
+      true
+    );
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <>
       <Header>
         <Text style={styles.text}>Selection Screen</Text>
       </Header>
-      <Text style={styles.chooseText}>Please select one of the following options:</Text>
-      <Button
-        onPress={() => navigate("Online List")}
-        label="Online List"
-        description="Live list, listens to wunder-provider socket"
-        icon="network"
-        fontColor="#097"
-        reverse
-      />
-      <Button
-        onPress={() => navigate("Local List")}
-        label="Local List"
-        description="Useful when socket connection is not available."
-        icon="drive"
-        fontColor="#936"
-      />
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
-    </View>
+      <Animated.View style={[styles.container, containerStyle]}>
+        <Text style={styles.chooseText}>
+          Please select one of the following options:
+        </Text>
+        <View style={styles.buttons}>
+          <Button
+            onPress={() => navigate("Online List")}
+            label="Online List"
+            description="Live list, listens for an external socket"
+            icon="network"
+            fontColor="#097"
+            reverse
+          />
+          <Button
+            onPress={() => navigate("Local List")}
+            label="Local List"
+            description="Useful when the socket connection is not available."
+            icon="drive"
+            fontColor="#936"
+          />
+        </View>
+        <StatusBar barStyle="dark-content" backgroundColor="white" />
+      </Animated.View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: "#dedede",
     justifyContent: "center",
   },
@@ -104,6 +137,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 24,
-    height: 24
-  }
+    height: 24,
+  },
+  buttons: {
+    alignItems: "center",
+  },
 });

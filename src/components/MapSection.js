@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { default as mapViewStyle } from "../mapStyle.json";
+import { default as mapViewStyle } from "../dataSets/mapStyle.json";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { useTransition } from "react-native-redash";
 import Animated, { EasingNode } from "react-native-reanimated";
@@ -15,11 +15,6 @@ export default ({ location, styles: style }) => {
     duration: 200,
     easing: EasingNode.in(EasingNode.circle),
   });
-
-  // const opacity = interpolate(transition, {
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 1],
-  // });
 
   const coordinates = {
     latitude: parseFloat(location.coordinates.latitude),

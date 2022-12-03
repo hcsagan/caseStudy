@@ -1,17 +1,20 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Header from "./Header";
 
-const statusList = ["Loading...", "Connected", "Connect error.", "Connect failed.", "Disconnected"];
+const statusList = [
+  "Loading...",
+  "Connected",
+  "Connect error.",
+  "Connect failed.",
+  "Disconnected",
+];
 const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
 
 export default React.memo(({ status }) => (
-  <Header back>
-    <View style={styles.textWrapper}>
-      <Text style={styles.statusText}>Status: {statusList[status]}</Text>
-      <View style={styles.info(statusColors[status])} />
-    </View>
-  </Header>
+  <View style={styles.textWrapper}>
+    <Text style={styles.statusText}>Status: {statusList[status]}</Text>
+    <View style={styles.info(statusColors[status])} />
+  </View>
 ));
 
 const styles = StyleSheet.create({

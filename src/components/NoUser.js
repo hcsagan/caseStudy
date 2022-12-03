@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { Svg, Path } from "react-native-svg";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const Oops = React.memo(() => (
   <Svg style={styles.oops} viewBox="0 0 27 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: height * 0.1,
   },
   description: {
     width: width * 0.8,

@@ -3,8 +3,9 @@ import { Animated, Dimensions, StyleSheet, Text, View, ActivityIndicator } from 
 import { Ionicons } from "@expo/vector-icons";
 import { Path, Svg } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ContactDetails from "./components/ContactDetails";
-import MapSection from "../../components/MapSection";
+import ContactDetails from "../components/ContactDetails";
+import MapSection from "../components/MapSection";
+import PopupScreenContainer from "../components/PopupScreenContainer";
 
 const { width } = Dimensions.get("window");
 const VIEWPORT_WIDTH = width / 100;
@@ -23,7 +24,10 @@ const Name = ({ name }) => (
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
-const SocketList = ({ gender, name, dob, email, cell, phone, picture, location }) => {
+const PopupScreen = ({ route }) => {
+  const { gender, name, dob, email, cell, phone, picture, location } = route.params.data;
+
+
   const [load, setLoad] = useState(false);
   const insets = useSafeAreaInsets();
 
@@ -45,7 +49,8 @@ const SocketList = ({ gender, name, dob, email, cell, phone, picture, location }
   }, []);
 
   return (
-    <Animated.ScrollView
+    <PopupScreenContainer>
+      <Animated.ScrollView
       style={styles.scrollView(insets)}
       onScroll={scrollHandler}
       directionalLockEnabled
@@ -79,6 +84,7 @@ const SocketList = ({ gender, name, dob, email, cell, phone, picture, location }
         </Animated.View>
       </Animated.View>
     </Animated.ScrollView>
+    </PopupScreenContainer>
   );
 };
 
@@ -198,4 +204,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(SocketList);
+export default React.memo(PopupScreen);

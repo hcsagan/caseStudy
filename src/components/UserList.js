@@ -33,8 +33,7 @@ export default React.memo(({ data, onPress }) => {
 
 const styles = StyleSheet.create({
   list: { backgroundColor: "#f5f5f9" },
-  listContainer: ({ top, bottom, left, right }) => ({
-    paddingTop: top + 56,
+  listContainer: ({ bottom, left, right }) => ({
     paddingBottom: bottom + 20,
     paddingLeft: left,
     paddingRight: right

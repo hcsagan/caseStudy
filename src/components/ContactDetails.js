@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import IconButton from "../../../components/IconButton";
+import IconButton from "./IconButton";
 import Animated, { interpolateNode, Extrapolate, EasingNode, Value, timing } from "react-native-reanimated";
 import { transformOrigin } from "react-native-redash";
 

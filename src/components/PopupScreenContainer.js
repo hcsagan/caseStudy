@@ -1,19 +1,30 @@
 import React from "react";
-import { View, TouchableOpacity, Dimensions, StyleSheet, StatusBar } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+  StatusBar,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import PopupScreen from "./PopupScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const { width: VIEWPORT_WIDTH } = Dimensions.get("window");
 
-export default React.memo(({ route, navigation }) => {
-  const { data } = route.params;
+export default React.memo(({ children }) => {
+  const { goBack } = useNavigation();
   const insets = useSafeAreaInsets();
   return (
     <View style={styles.container(insets)}>
-      <PopupScreen {...data} />
-      <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
-        <Ionicons name="ios-close" style={styles.closeIcon} size={48} color="black" />
+      {children}
+      <TouchableOpacity style={styles.closeButton} onPress={goBack}>
+        <Ionicons
+          name="ios-close"
+          style={styles.closeIcon}
+          size={48}
+          color="black"
+        />
       </TouchableOpacity>
       <StatusBar barStyle="light-content" backgroundColor="black" />
     </View>
