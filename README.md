@@ -1,3 +1,3 @@
-# wunderSubmission
+# caseStudy
 
-Expo link: https://expo.io/@hcsagan/wunderSubmission
+Expo link: https://expo.io/@hcsagan/caseStudy
