@@ -8,7 +8,7 @@ import { User } from "../types/User";
 
 interface UserListProps {
   data: User[],
-  onPress: (index: number) => any;
+  onPress: (index: number) => void;
 }
 
 export default React.memo(({ data, onPress }: UserListProps) => {

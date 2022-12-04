@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
+  ViewStyle,
+  TextStyle
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -15,16 +17,25 @@ import Animated, {
 import { Entypo } from "@expo/vector-icons";
 import Header from "../components/Header";
 
-const Button = ({ label, icon, fontColor, reverse, onPress, description }) => {
+interface Button {
+  label: string;
+  iconName: string;
+  fontColor: string;
+  reverse?: boolean;
+  onPress: () => any;
+  description: string;
+}
+
+const Button = ({ label, iconName, fontColor, reverse = false, onPress, description }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
-      <View style={styles.header(reverse)}>
-        <Text style={styles.headerText(fontColor)}>{label}</Text>
-        <View style={styles.iconWrapper(fontColor)}>
-          <Entypo name={icon} size={24} color="white" style={styles.icon} />
+      <View style={dynamicStyle.header(reverse)}>
+        <Text style={dynamicStyle.headerText(fontColor)}>{label}</Text>
+        <View style={dynamicStyle.iconWrapper(fontColor)}>
+          <Entypo name={iconName} size={24} color="white" style={styles.icon} />
         </View>
       </View>
-      <Text style={styles.description(reverse)}>{description}</Text>
+      <Text style={dynamicStyle.description(reverse)}>{description}</Text>
     </TouchableOpacity>
   );
 };
@@ -60,7 +71,7 @@ export default ({ navigation: { navigate } }) => {
             onPress={() => navigate("Online List")}
             label="Online List"
             description="Live list, listens for an external socket"
-            icon="network"
+            iconName="network"
             fontColor="#097"
             reverse
           />
@@ -68,7 +79,7 @@ export default ({ navigation: { navigate } }) => {
             onPress={() => navigate("Local List")}
             label="Local List"
             description="Useful when the socket connection is not available."
-            icon="drive"
+            iconName="drive"
             fontColor="#936"
           />
         </View>
@@ -99,27 +110,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
   },
-  header: (reverse) => ({
-    flexDirection: reverse ? "row-reverse" : "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  }),
-  headerText: (color) => ({
-    fontWeight: "700",
-    fontSize: 24,
-    color,
-  }),
-  iconWrapper: (backgroundColor) => ({
-    backgroundColor,
-    padding: 6,
-    borderRadius: 20,
-  }),
-  description: (reverse = false) => ({
-    fontSize: 12,
-    color: "#556",
-    marginTop: 12,
-    alignSelf: reverse === true ? "flex-end" : null,
-  }),
   chooseText: {
     fontWeight: "500",
     fontSize: 14,
@@ -143,3 +133,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+const dynamicStyle: { [k: string]: (...args: any) => ViewStyle | TextStyle } = {
+  header: (reverse): ViewStyle => ({
+    flexDirection: reverse ? "row-reverse" : "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  }),
+  headerText: (color) => ({
+    fontWeight: "700",
+    fontSize: 24,
+    color,
+  }),
+  iconWrapper: (backgroundColor) => ({
+    backgroundColor,
+    padding: 6,
+    borderRadius: 20,
+  }),
+  description: (reverse = false) => ({
+    fontSize: 12,
+    color: "#556",
+    marginTop: 12,
+    alignSelf: reverse === true ? "flex-end" : null,
+  }),
+}
