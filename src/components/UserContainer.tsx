@@ -1,12 +1,18 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import LinearGradient from "../components/LinearGradientBackground";
 import { View, StyleSheet, Dimensions } from "react-native";
 
 /*
   ! I could use just linear gradient component but it doesn't support shadow in ios, 
   ! so I just wrapped it with View element. 
 */
-export default React.memo(({ gender, children }) => {
+
+interface UserContainerProps {
+  gender: string;
+  children: React.ReactNode;
+}
+
+export default React.memo(({ gender, children }: UserContainerProps) => {
   return (
     <View style={[styles.container, boxShadow]}>
       <LinearGradient
@@ -37,7 +43,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginHorizontal: Dimensions.get("window").width * 0.03,
     marginTop: Dimensions.get("window").width * 0.06,
-    borderRadius: 12,
   },
   bg: {
     borderRadius: 12,

@@ -1,14 +1,19 @@
 import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Region } from "react-native-maps";
 import { default as mapViewStyle } from "../dataSets/mapStyle.json";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useTransition } from "react-native-redash";
 import Animated, { EasingNode } from "react-native-reanimated";
+import { Coordinates, Location } from "../types/User";
 
-const light = (text) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
+const light = (text: string) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
-export default ({ location, styles: style }) => {
+interface MapSectionProps {
+  location: Location;
+}
+
+export default ({ location }: MapSectionProps) => {
   const [showResetMap, setShowResetMap] = useState(false);
 
   const opacity = useTransition(showResetMap, {
@@ -29,7 +34,7 @@ export default ({ location, styles: style }) => {
 
   // ! What I did here is, just check if region is different than user's location.
   // ! If, it is different, just make marker icon red, if it's not, turn back to grey
-  const regionCheck = ({ latitude, longitude }) => {
+  const regionCheck = ({ latitude, longitude }: Region) => {
     if (
       Math.abs(coordinates.longitude - longitude) > 0.3 ||
       Math.abs(coordinates.latitude - latitude) > 0.18
@@ -40,16 +45,16 @@ export default ({ location, styles: style }) => {
     }
   };
 
-  const mapRef = useRef();
+  const mapRef = useRef<MapView>();
 
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
-        <Text style={[style.text, style.heading]}>LOCATION</Text>
+        <Text style={[styles.text, styles.heading]}>LOCATION</Text>
         <Animated.View style={{ opacity }}>
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => mapRef.current.animateToRegion(region)}
+            onPress={() => mapRef.current?.animateToRegion(region)}
           >
             <View style={styles.detailsButton}>
               <Text style={styles.detailsButtonText}>RESET</Text>
@@ -61,7 +66,7 @@ export default ({ location, styles: style }) => {
         </Animated.View>
       </View>
 
-      <View style={[style.contact, styles.stretch, styles.addressWrapper]}>
+      <View style={[styles.contact, styles.stretch, styles.addressWrapper]}>
         <Ionicons name="ios-pin" size={20} color="#be3a3a" style={styles.markerIcon} />
         <View>
           {light(location.street.name + ", Nr. " + location.street.number)}
@@ -70,9 +75,9 @@ export default ({ location, styles: style }) => {
         </View>
       </View>
       <MapView
-        ref={mapRef}
+        ref={mapRef as React.LegacyRef<MapView>}
         provider="google"
-        style={style.mapStyle}
+        style={styles.mapStyle}
         customMapStyle={mapViewStyle}
         initialRegion={region}
         onRegionChangeComplete={regionCheck}
@@ -119,4 +124,25 @@ const styles = StyleSheet.create({
   locationIcon: { marginRight: 4, marginTop: 2 },
   markerIcon: { marginRight: 12, marginLeft: 4 },
   stretch: { alignItems: "stretch" },
+  contact: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  mapStyle: {
+    width: "100%",
+    height: Dimensions.get('window').width * .5,
+  },
+  text: {
+    color: "#556",
+  },
+  heading: {
+    fontWeight: "800",
+    fontSize: 16,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    alignItems: "center",
+  },
 });

@@ -1,10 +1,20 @@
 import React, { useEffect, useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Location, Name, Picture, User } from "../types/User";
 
 const { width } = Dimensions.get("window");
 const VW = width / 100;
-export default React.memo((props) => {
+
+interface UserCardProps {
+  name: Name;
+  picture: Picture;
+  location: Location;
+  onPress: (index: number) => any;
+  index: number;
+}
+
+export default React.memo((props: UserCardProps) => {
   const { name, picture, location, onPress, index } = useMemo(() => props, []);
 
   return (

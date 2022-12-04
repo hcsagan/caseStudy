@@ -4,18 +4,28 @@ import ConnectionStatus from "../components/ConnectionStatus";
 import { View } from "react-native";
 import useSocket from "../hooks/useSocket";
 import Header from "../components/Header";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootNavigatorParamList } from '../../App'
+import { User } from "../types/User";
 
-const LIMIT = 20;
+const MAX_USERS = 20;
 
-export default ({ navigation }) => {
-  const [userList, setUserList] = useState([]);
+type SocketListProps = {
+  navigation: StackNavigationProp<
+    RootNavigatorParamList,
+    'Main'
+  >
+}
+
+export default ({ navigation }: SocketListProps) => {
+  const [userList, setUserList] = useState<User[]>([]);
   const { status, newUser } = useSocket();
 
   //update the user list, and limit the users at some point
   useEffect(() => {
     if (newUser !== undefined && !userList.includes(newUser)) {
       setUserList((userList) => {
-        if (userList.length >= LIMIT) userList.pop();
+        if (userList.length >= MAX_USERS) userList.pop();
         return [newUser, ...userList];
       });
     }
@@ -23,7 +33,7 @@ export default ({ navigation }) => {
 
   // sending the selected user's data to popup screen
   const openPopup = useCallback(
-    (index) => {
+    (index: number) => {
       navigation.navigate("Modal", { data: userList[index] });
     },
     [userList]
@@ -34,7 +44,7 @@ export default ({ navigation }) => {
       <Header showBack>
         <ConnectionStatus status={status} />
       </Header>
-      <UserList data={userList} socket={true} onPress={openPopup} />
+      <UserList data={userList} onPress={openPopup} />
     </View>
   );
 };

@@ -9,13 +9,28 @@ import PopupScreen from "./src/pages/PopupScreen";
 import { enableScreens } from "react-native-screens";
 import { Dimensions } from "react-native";
 import { ToastProvider } from "react-native-toast-notifications";
+import { User } from "./src/types/User";
 
 enableScreens();
 
 const { height: VIEWPORT_HEIGHT } = Dimensions.get("window");
 
-const RootStack = createStackNavigator();
-const Stack = createStackNavigator();
+export type MainNavigatorParamList = {
+  "Select Screen": undefined,
+  "Local List": undefined,
+  "Online List": undefined
+}
+
+export type RootNavigatorParamList = {
+  Main: undefined,
+  Modal: {
+    data: User
+  }
+}
+
+const RootStack = createStackNavigator<RootNavigatorParamList>();
+const Stack = createStackNavigator<MainNavigatorParamList>();
+
 
 const MainNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
