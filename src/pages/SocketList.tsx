@@ -8,7 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootNavigatorParamList } from '../../App'
 import { User } from "../types/User";
 
-const LIMIT = 20;
+const MAX_USERS = 20;
 
 type SocketListProps = {
   navigation: StackNavigationProp<
@@ -25,7 +25,7 @@ export default ({ navigation }: SocketListProps) => {
   useEffect(() => {
     if (newUser !== undefined && !userList.includes(newUser)) {
       setUserList((userList) => {
-        if (userList.length >= LIMIT) userList.pop();
+        if (userList.length >= MAX_USERS) userList.pop();
         return [newUser, ...userList];
       });
     }

@@ -1,23 +1,39 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { SocketStatus } from "../hooks/useSocket";
 
-const statusList = [
-  "Loading...",
-  "Connected",
-  "Connect error.",
-  "Connect failed.",
-  "Disconnected",
-];
-const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
+const getStatusName = (status: SocketStatus) => {
+  const names = {
+    [SocketStatus.Loading] : "Loading...",
+    [SocketStatus.Connected] : "Connected",
+    [SocketStatus.ConnectionError] : "Connect error.",
+    [SocketStatus.ConnectionFailed] : "Connect failed.",
+    [SocketStatus.Disconnected] : "Disconnected",
+  }
+
+  return names[status];
+};
+
+const getStatusColor = (status: SocketStatus) => {
+  const colors = {
+    [SocketStatus.Loading] : "#fe0",
+    [SocketStatus.Connected] : "#af0",
+    [SocketStatus.ConnectionError] : "#f55",
+    [SocketStatus.ConnectionFailed] : "#f55",
+    [SocketStatus.Disconnected] : "#f55"
+  }
+
+  return colors[status];
+}
 
 interface IConnectionStatus {
-  status: number;
+  status: SocketStatus;
 }
 
 export default React.memo(({ status }: IConnectionStatus) => (
   <View style={styles.textWrapper}>
-    <Text style={styles.statusText}>Status: {statusList[status]}</Text>
-    <View style={[styles.info, { backgroundColor: statusColors[status] }]} />
+    <Text style={styles.statusText}>Status: {getStatusName(status)}</Text>
+    <View style={[styles.info, { backgroundColor: getStatusColor(status) }]} />
   </View>
 ));
 
