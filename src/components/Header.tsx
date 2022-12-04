@@ -8,7 +8,7 @@ interface HeaderProps {
   showBack?: boolean;
 }
 
-const Header = ({ children, showBack = false }) => {
+const Header = ({ children, showBack = false }: HeaderProps) => {
   const { top } = useSafeAreaInsets();
 
   return (

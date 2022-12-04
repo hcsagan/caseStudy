@@ -11,7 +11,7 @@ interface LocalListProps {
 }
 
 export default ({ navigation }: LocalListProps) => {
-  const openPopup = useCallback((index) => {
+  const openPopup = useCallback((index: number) => {
     navigation.navigate("Modal", { data: data[index] });
   }, []);
 

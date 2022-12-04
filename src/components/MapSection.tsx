@@ -1,20 +1,19 @@
 import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Region } from "react-native-maps";
 import { default as mapViewStyle } from "../dataSets/mapStyle.json";
 import { Ionicons } from "@expo/vector-icons";
 import { useTransition } from "react-native-redash";
 import Animated, { EasingNode } from "react-native-reanimated";
-import { Location } from "../types/User";
+import { Coordinates, Location } from "../types/User";
 
 const light = (text: string) => <Text style={{ color: "#778", fontWeight: "300" }}>{text}</Text>;
 
 interface MapSectionProps {
   location: Location;
-  styles: unknown;
 }
 
-export default ({ location, styles: style }: MapSectionProps) => {
+export default ({ location }: MapSectionProps) => {
   const [showResetMap, setShowResetMap] = useState(false);
 
   const opacity = useTransition(showResetMap, {
@@ -35,7 +34,7 @@ export default ({ location, styles: style }: MapSectionProps) => {
 
   // ! What I did here is, just check if region is different than user's location.
   // ! If, it is different, just make marker icon red, if it's not, turn back to grey
-  const regionCheck = ({ latitude, longitude }) => {
+  const regionCheck = ({ latitude, longitude }: Region) => {
     if (
       Math.abs(coordinates.longitude - longitude) > 0.3 ||
       Math.abs(coordinates.latitude - latitude) > 0.18
@@ -55,7 +54,7 @@ export default ({ location, styles: style }: MapSectionProps) => {
         <Animated.View style={{ opacity }}>
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => mapRef.current.animateToRegion(region)}
+            onPress={() => mapRef.current?.animateToRegion(region)}
           >
             <View style={styles.detailsButton}>
               <Text style={styles.detailsButtonText}>RESET</Text>
@@ -76,7 +75,7 @@ export default ({ location, styles: style }: MapSectionProps) => {
         </View>
       </View>
       <MapView
-        ref={mapRef}
+        ref={mapRef as React.LegacyRef<MapView>}
         provider="google"
         style={styles.mapStyle}
         customMapStyle={mapViewStyle}

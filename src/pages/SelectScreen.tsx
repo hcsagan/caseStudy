@@ -16,8 +16,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { Entypo } from "@expo/vector-icons";
 import Header from "../components/Header";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainNavigatorParamList, RootNavigatorParamList } from "../../App";
 
-interface Button {
+interface ButtonProps {
   label: string;
   iconName: string;
   fontColor: string;
@@ -26,13 +28,13 @@ interface Button {
   description: string;
 }
 
-const Button = ({ label, iconName, fontColor, reverse = false, onPress, description }) => {
+const Button = ({ label, iconName, fontColor, reverse = false, onPress, description }: ButtonProps) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <View style={dynamicStyle.header(reverse)}>
         <Text style={dynamicStyle.headerText(fontColor)}>{label}</Text>
         <View style={dynamicStyle.iconWrapper(fontColor)}>
-          <Entypo name={iconName} size={24} color="white" style={styles.icon} />
+          <Entypo name={iconName as any} size={24} color="white" style={styles.icon} />
         </View>
       </View>
       <Text style={dynamicStyle.description(reverse)}>{description}</Text>
@@ -40,7 +42,11 @@ const Button = ({ label, iconName, fontColor, reverse = false, onPress, descript
   );
 };
 
-export default ({ navigation: { navigate } }) => {
+interface SelectScreenProps {
+  navigation: StackNavigationProp<MainNavigatorParamList, "Select Screen">
+}
+
+export default ({ navigation: { navigate } }: SelectScreenProps) => {
   const backgroundColor = useSharedValue("#dedede");
 
   const containerStyle = useAnimatedStyle(() => ({
@@ -135,17 +141,17 @@ const styles = StyleSheet.create({
 });
 
 const dynamicStyle: { [k: string]: (...args: any) => ViewStyle | TextStyle } = {
-  header: (reverse): ViewStyle => ({
+  header: (reverse: boolean): ViewStyle => ({
     flexDirection: reverse ? "row-reverse" : "row",
     justifyContent: "space-between",
     alignItems: "center",
   }),
-  headerText: (color) => ({
+  headerText: (color: string) => ({
     fontWeight: "700",
     fontSize: 24,
     color,
   }),
-  iconWrapper: (backgroundColor) => ({
+  iconWrapper: (backgroundColor: string) => ({
     backgroundColor,
     padding: 6,
     borderRadius: 20,
@@ -154,6 +160,6 @@ const dynamicStyle: { [k: string]: (...args: any) => ViewStyle | TextStyle } = {
     fontSize: 12,
     color: "#556",
     marginTop: 12,
-    alignSelf: reverse === true ? "flex-end" : null,
+    alignSelf: reverse === true ? "flex-end" : undefined,
   }),
 }

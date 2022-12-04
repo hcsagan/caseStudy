@@ -23,16 +23,22 @@ const closeConfig = {
   easing: EasingNode.out(EasingNode.sin),
 };
 
-const ContactDetails = ({ email, cell, phone }) => {
+interface ContactDetailsProps {
+  email: string;
+  cell: string;
+  phone: string;
+}
+
+const ContactDetails = ({ email, cell, phone }: ContactDetailsProps) => {
   const transition = useRef(new Value(0)).current;
-  const [open, setOpen] = useState<boolean>(undefined);
+  const [open, setOpen] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     // not pretty. had to make open state nullable so I can bypass first render
     open !== undefined && animate(open ? openConfig : closeConfig);
   }, [open]);
 
-  const animate = (action) => {
+  const animate = (action: Animated.TimingConfig) => {
     timing(transition, action).start();
   };
 

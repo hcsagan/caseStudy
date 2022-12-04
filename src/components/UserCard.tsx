@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { User } from "../types/User";
+import { Location, Name, Picture, User } from "../types/User";
 
 const { width } = Dimensions.get("window");
 const VW = width / 100;
 
-interface UserCardProps extends Partial<User> {
+interface UserCardProps {
+  name: Name;
+  picture: Picture;
+  location: Location;
   onPress: (index: number) => any;
   index: number;
 }

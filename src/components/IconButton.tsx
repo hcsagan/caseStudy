@@ -25,11 +25,11 @@ const { width } = Dimensions.get("screen");
 const areaWidth = width * 0.7 - 32;
 
 
-const lightText = (text) => (
+const lightText = (text: string) => (
   <Text style={style.lightText}>{text}</Text>
 );
 
-const getAnimatedValues = (transition, index) => {
+const getAnimatedValues = (transition: Animated.Value<number>, index: number) => {
   /*
    * Animation calculations
    */

@@ -2,21 +2,32 @@ import React, { useRef, useState, useEffect } from "react";
 import { Animated, Dimensions, StyleSheet, Text, View, ActivityIndicator, ViewStyle, TextStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Path, Svg } from "react-native-svg";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 import ContactDetails from "../components/ContactDetails";
 import MapSection from "../components/MapSection";
 import PopupScreenContainer from "../components/PopupScreenContainer";
 import { RootNavigatorParamList } from "../../App";
 import { RouteProp } from "@react-navigation/native";
+import { Name as NameProp } from "../types/User";
 
 const { width } = Dimensions.get("window");
 const VIEWPORT_WIDTH = width / 100;
 
-const Icon = ({ name, size = 16, iconStyle = { marginRight: 8 }, color = styles.text.color }) => (
-  <Ionicons style={iconStyle} name={name} size={size} color={color} />
-);
+interface IconProps {
+  name: any;
+  size?: number;
+  iconStyle?: ViewStyle;
+  color?: string;
+}
 
-const Name = ({ name }) => (
+const Icon = (props: IconProps) => {
+  const { name, size = 16, iconStyle = { marginRight: 8 }, color = styles.text.color } = props;
+  return (
+    <Ionicons style={iconStyle} name={name} size={size} color={color} />
+  )
+};
+
+const Name = ({ name }: { name: NameProp }) => (
   <View style={styles.nameContainer}>
     <Text adjustsFontSizeToFit={true} style={[styles.nameText, styles.text]}>
       {name.first} {name.last}
@@ -65,7 +76,7 @@ const PopupScreen = ({ route }: PopupScreenProps) => {
       >
         <Animated.View style={dynamicStyle.container(scrollX)}>
           <Animated.Image style={dynamicStyle.image(scrollY)} source={{ uri: picture.large }} />
-          <AnimatedSvg viewBox="0 0 100 100" style={dynamicStyle.mask(scrollY) as ViewStyle}>
+          <AnimatedSvg viewBox="0 0 100 100" style={dynamicStyle.mask(scrollY) as unknown as ViewStyle}>
             <Path d="M-1 100.125V87C31.1713 102.77 68.8287 102.77 101 87V100.125H-1Z" fill="white" />
           </AnimatedSvg>
           <Animated.View style={dynamicStyle.content(scrollY)}>
@@ -73,7 +84,7 @@ const PopupScreen = ({ route }: PopupScreenProps) => {
               <Animated.Text style={[
                 styles.nameText,
                 styles.text,
-                dynamicStyle.title(scrollY) as TextStyle,
+                dynamicStyle.title(scrollY) as unknown as TextStyle,
               ]}>
                 {name.title}
               </Animated.Text>
@@ -89,7 +100,7 @@ const PopupScreen = ({ route }: PopupScreenProps) => {
             {load && (
               <>
                 <ContactDetails email={email} cell={cell} phone={phone} />
-                <MapSection location={location} styles={styles} />
+                <MapSection location={location} />
               </>
             )}
           </Animated.View>
@@ -144,10 +155,10 @@ const styles = StyleSheet.create({
 });
 
 const dynamicStyle = {
-  scrollView: ({ top, bottom }) => ({
+  scrollView: ({ top, bottom }: EdgeInsets) => ({
     height: Dimensions.get("window").height - (top + bottom + 5 * VIEWPORT_WIDTH),
   }),
-  container: (scrollX) => ({
+  container: (scrollX: Animated.Value) => ({
     flex: 1,
     paddingBottom: 16,
     transform: [
@@ -156,7 +167,7 @@ const dynamicStyle = {
       }
     ]
   }),
-  mask: (scrollY) => ({
+  mask: (scrollY: Animated.Value) => ({
     width: Math.round(90 * VIEWPORT_WIDTH),
     height: Math.round(90 * VIEWPORT_WIDTH),
     position: "absolute",
@@ -169,7 +180,7 @@ const dynamicStyle = {
       },
     ],
   }),
-  image: (scrollY) => ({
+  image: (scrollY: Animated.Value) => ({
     top: 0,
     width: Math.round(90 * VIEWPORT_WIDTH),
     height: Math.round(90 * VIEWPORT_WIDTH),
@@ -189,14 +200,14 @@ const dynamicStyle = {
       },
     ],
   }),
-  title: (scrollY) => ({
+  title: (scrollY: Animated.Value) => ({
     fontWeight: "100",
     opacity: scrollY.interpolate({
       inputRange: [0, width * 0.45],
       outputRange: [1, 0],
     }),
   }),
-  content: (scrollY) => ({
+  content: (scrollY: Animated.Value) => ({
     paddingHorizontal: 16,
     flex: 1,
     width: "100%",

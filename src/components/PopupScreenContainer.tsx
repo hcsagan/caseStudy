@@ -6,7 +6,7 @@ import {
   StyleSheet,
   StatusBar,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -35,7 +35,7 @@ export default React.memo(({ children }: PopupScreenContainerProps) => {
   );
 });
 
-const containerSpacing = ({ top, bottom, left, right }) => ({
+const containerSpacing = ({ top, bottom, left, right }: EdgeInsets) => ({
   marginTop: top + VIEWPORT_WIDTH * 0.01,
   marginBottom: bottom + VIEWPORT_WIDTH * 0.05,
   marginLeft: left + VIEWPORT_WIDTH * 0.05,
