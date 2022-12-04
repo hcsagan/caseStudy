@@ -5,7 +5,7 @@ import { Svg, Path } from "react-native-svg";
 const { width } = Dimensions.get("window");
 
 const Oops = React.memo(() => (
-  <Svg style={styles.oops} viewBox="0 0 27 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <Svg style={styles.oops} viewBox="0 0 27 12" fill="none">
     <Path d={path} fill="#667" />
   </Svg>
 ));

@@ -3,11 +3,16 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "./BackButton";
 
+interface HeaderProps {
+  children: React.ReactNode;
+  showBack?: boolean;
+}
+
 const Header = ({ children, showBack = false }) => {
   const { top } = useSafeAreaInsets();
 
   return (
-    <View style={styles.container(top)}>
+    <View style={[styles.container, { paddingTop: top + 12 }]}>
       {showBack && <BackButton />}
       {children}
     </View>
@@ -15,8 +20,7 @@ const Header = ({ children, showBack = false }) => {
 };
 
 const styles = StyleSheet.create({
-  container: (topInset) => ({
-    paddingTop: topInset + 12,
+  container: {
     paddingBottom: 12,
     backgroundColor: "#fff",
     width: "100%",
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 2.62,
-  }),
+  },
   text: {
     fontSize: 18,
   },

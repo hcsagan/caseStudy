@@ -12,11 +12,15 @@ import { useNavigation } from "@react-navigation/native";
 
 const { width: VIEWPORT_WIDTH } = Dimensions.get("window");
 
-export default React.memo(({ children }) => {
+interface PopupScreenContainerProps {
+  children: React.ReactNode;
+}
+
+export default React.memo(({ children }: PopupScreenContainerProps) => {
   const { goBack } = useNavigation();
   const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container(insets)}>
+    <View style={[styles.container, containerSpacing(insets)]}>
       {children}
       <TouchableOpacity style={styles.closeButton} onPress={goBack}>
         <Ionicons
@@ -31,19 +35,22 @@ export default React.memo(({ children }) => {
   );
 });
 
+const containerSpacing = ({ top, bottom, left, right }) => ({
+  marginTop: top + VIEWPORT_WIDTH * 0.01,
+  marginBottom: bottom + VIEWPORT_WIDTH * 0.05,
+  marginLeft: left + VIEWPORT_WIDTH * 0.05,
+  marginRight: right + VIEWPORT_WIDTH * 0.05,
+})
+
 const styles = StyleSheet.create({
-  container: ({ top, bottom, left, right }) => ({
+  container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
     overflow: "hidden",
     backgroundColor: "white",
-    marginTop: top + VIEWPORT_WIDTH * 0.01,
-    marginBottom: bottom + VIEWPORT_WIDTH * 0.05,
-    marginLeft: left + VIEWPORT_WIDTH * 0.05,
-    marginRight: right + VIEWPORT_WIDTH * 0.05,
-  }),
+  },
   closeButton: {
     position: "absolute",
     top: 0,

@@ -10,10 +10,14 @@ const statusList = [
 ];
 const statusColors = ["#fe0", "#af0", "#f55", "#f55", "#f55"];
 
-export default React.memo(({ status }) => (
+interface IConnectionStatus {
+  status: number;
+}
+
+export default React.memo(({ status }: IConnectionStatus) => (
   <View style={styles.textWrapper}>
     <Text style={styles.statusText}>Status: {statusList[status]}</Text>
-    <View style={styles.info(statusColors[status])} />
+    <View style={[styles.info, { backgroundColor: statusColors[status] }]} />
   </View>
 ));
 
@@ -22,13 +26,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
-  info: (backgroundColor) => ({
+  info: {
     width: 16,
     height: 16,
     borderRadius: 8,
     elevation: 3,
-    backgroundColor,
-  }),
+  },
   textWrapper: {
     flex: 1,
     flexDirection: "row",

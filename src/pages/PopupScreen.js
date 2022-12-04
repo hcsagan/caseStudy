@@ -184,23 +184,13 @@ const styles = StyleSheet.create({
     marginTop: -8,
     marginBottom: -4,
   },
-  mapStyle: {
-    width: "100%",
-    height: 50 * VIEWPORT_WIDTH,
-  },
+
   heading: {
     fontWeight: "800",
     fontSize: 16,
     letterSpacing: 0.5,
     textTransform: "uppercase",
     alignItems: "center",
-  },
-  contact: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    marginBottom: 16,
-    paddingHorizontal: 8,
   },
 });
 

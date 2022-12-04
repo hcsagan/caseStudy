@@ -7,36 +7,26 @@ import {
   Dimensions,
   Linking,
 } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
 import Animated, {
   interpolateNode,
   Extrapolate,
   sub,
+  AnimateStyle,
+  
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import * as Clipboard from "expo-clipboard";
-
+import { GestureResponderEvent } from 'react-native';
 import { useToast } from "react-native-toast-notifications";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AnimatedIcon from "./AnimatedIcon";
 
 const { width } = Dimensions.get("screen");
 const areaWidth = width * 0.7 - 32;
 
-const Icon = React.memo(({ name, size = 36, color }) => {
-  const NewIcon = Animated.createAnimatedComponent(
-    name === "old-phone" ? Entypo : Ionicons
-  );
-  return (
-    <NewIcon
-      name={name}
-      size={name === "old-phone" ? size - 6 : size}
-      color={color}
-    />
-  );
-});
 
 const lightText = (text) => (
-  <Text style={{ color: "#889", fontWeight: "300" }}>{text}</Text>
+  <Text style={style.lightText}>{text}</Text>
 );
 
 const getAnimatedValues = (transition, index) => {
@@ -88,8 +78,18 @@ const getAnimatedValues = (transition, index) => {
   };
 };
 
+interface IIconButton {
+  text: string;
+  link: string;
+  icon: string;
+  iconColor: string;
+  open: Animated.Value<number>
+  type: string;
+  index: number;
+}
+
 export default React.memo(
-  ({ text, link, icon, iconColor, open: transition, type, index }) => {
+  ({ text, link, icon, iconColor, open: transition, type, index }: IIconButton) => {
     const toast = useToast();
     const { top } = useSafeAreaInsets();
 
@@ -97,7 +97,7 @@ export default React.memo(
       getAnimatedValues(transition, index);
 
     // TODO Long Press actions (For now, it has only copy, but modal and actions can be added)
-    writeToClipboard = async (text, e) => {
+    const writeToClipboard = async (text: string, e: GestureResponderEvent) => {
       await Clipboard.setStringAsync(text);
       toast.hideAll();
       toast.show("Copied", {
@@ -118,21 +118,21 @@ export default React.memo(
     });
 
     return (
-      <Animated.View style={styles.button(positionX, positionY)}>
+      <Animated.View style={animatedStyle.button(positionX, positionY)}>
         <TouchableOpacity
           onPress={() => Linking.openURL(link).catch((e) => console.log(e))}
           onLongPress={(e) => writeToClipboard(text, e)}
         >
-          <View style={styles.contact}>
-            <Animated.View style={styles.contactIcon(scale)}>
-              <Animated.View style={styles.bigIcon(greyOpacity)}>
-                <Icon name={icon} color={iconColor} />
+          <View style={style.contact}>
+            <Animated.View style={animatedStyle.contactIcon(scale)}>
+              <Animated.View style={animatedStyle.bigIcon(greyOpacity)}>
+                <AnimatedIcon name={icon} color={iconColor} />
               </Animated.View>
-              <Animated.View style={styles.littleIcon(greyOpacity)}>
-                <Icon name={icon} color="#556" />
+              <Animated.View style={animatedStyle.littleIcon(greyOpacity)}>
+                <AnimatedIcon name={icon} color="#556" />
               </Animated.View>
               <Animated.Text
-                style={styles.descText(iconTextOpacity)}
+                style={animatedStyle.descText(iconTextOpacity)}
                 allowFontScaling={false}
               >
                 {lightText(type)}
@@ -146,14 +146,15 @@ export default React.memo(
   }
 );
 
-const styles = StyleSheet.create({
+type AnimatedStyle = {
+  [k: string]: (...args: any) => AnimateStyle<unknown>
+}
+
+const animatedStyle: AnimatedStyle = ({
   button: (x, y) => ({
     position: "absolute",
     transform: [{ translateY: y }, { translateX: x }],
   }),
-  text: {
-    color: "#556",
-  },
   bigIcon: (greyOpacity) => ({
     position: "absolute",
     opacity: sub(1, greyOpacity),
@@ -162,11 +163,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     opacity: greyOpacity,
   }),
-  contact: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
   contactIcon: (scale) => ({
     width: 36,
     height: 36,
@@ -180,4 +176,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     opacity,
   }),
+});
+
+const style = StyleSheet.create({
+  contact: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  lightText: { color: "#889", fontWeight: "300" }
 });

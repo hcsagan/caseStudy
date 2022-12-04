@@ -1,11 +1,17 @@
 import React from "react";
 import { FlatList, StyleSheet } from "react-native";
 import UserContainer from "./UserContainer";
-import UserButton from "./UserButton";
+import UserButton from "./UserCard";
 import NoUser from "./NoUser";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { User } from "../types/User";
 
-export default React.memo(({ data, onPress }) => {
+interface UserListProps {
+  data: User[],
+  onPress: (index: number) => any;
+}
+
+export default React.memo(({ data, onPress }: UserListProps) => {
   const insets = useSafeAreaInsets();
 
   const renderItem = ({ item, index }) => (
@@ -24,7 +30,7 @@ export default React.memo(({ data, onPress }) => {
     <FlatList
       data={data}
       renderItem={renderItem}
-      contentContainerStyle={styles.listContainer(insets)}
+      contentContainerStyle={listContainerStyle(insets)}
       style={styles.list}
       ListEmptyComponent={NoUser}
     />
@@ -33,9 +39,10 @@ export default React.memo(({ data, onPress }) => {
 
 const styles = StyleSheet.create({
   list: { backgroundColor: "#f5f5f9" },
-  listContainer: ({ bottom, left, right }) => ({
-    paddingBottom: bottom + 20,
-    paddingLeft: left,
-    paddingRight: right
-  }),
+});
+
+const listContainerStyle = ({ bottom, left, right }) => ({
+  paddingBottom: bottom + 20,
+  paddingLeft: left,
+  paddingRight: right
 });
