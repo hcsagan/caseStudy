@@ -66,7 +66,7 @@ export default ({ navigation: { navigate } }: SelectScreenProps) => {
   return (
     <>
       <Header>
-        <Text style={styles.text}>Selection Screen</Text>
+        <Text style={styles.text}>Select Screen</Text>
       </Header>
       <Animated.View style={[styles.container, containerStyle]}>
         <Text style={styles.chooseText}>

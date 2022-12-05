@@ -3,23 +3,10 @@
   "displayName": "Case study",
   "expo": {
     "name": "Case study",
-    "slug": "case-study",
+    "slug": "caseStudy",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "688a2f42-6279-40a5-8b6e-257441000c0a"
-      }
-    },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/688a2f42-6279-40a5-8b6e-257441000c0a"
-    },
-    "android": {},
-    "ios": {}
+    ]
   }
 }
