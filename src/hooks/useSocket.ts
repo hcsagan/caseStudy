@@ -16,7 +16,7 @@ const useSocket = () => {
   // Initialization and setup the socket
   useEffect(() => {
     // TODO: create socket server that does the same
-    const socket = io("https://wunder-provider.herokuapp.com");
+    const socket = io("https://case-study.herokuapp.com");
 
     socket.once("connect", () => setStatus(SocketStatus.Connected));
     socket.on("connect_error", () => setStatus(SocketStatus.ConnectionError));
