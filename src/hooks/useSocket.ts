@@ -15,17 +15,15 @@ const useSocket = () => {
 
   // Initialization and setup the socket
   useEffect(() => {
-    // TODO: create socket server that does the same
-    const socket = io("https://case-study.herokuapp.com");
+    const socket = io("https://case-study.adaptable.app/");
 
     socket.once("connect", () => setStatus(SocketStatus.Connected));
     socket.on("connect_error", () => setStatus(SocketStatus.ConnectionError));
+    socket.on("connect_failed", () => setStatus(SocketStatus.ConnectionFailed));
+    socket.on("disconnect", () => setStatus(SocketStatus.Disconnected));
     
     socket.connected ? setStatus(SocketStatus.Connected) : socket.connect();
 
-    // ! disabled these listeners due to performance issues
-    //socket.on("connect_failed", () => setStatus(3));
-    //socket.on("disconnect", () => setStatus(4));
 
     socket.on("userList", ({ results, info }) => {
       if (results[0] !== newUser) setNewUser({ ...results[0], key: info.seed });
@@ -34,6 +32,7 @@ const useSocket = () => {
     //cleaning the listeners and setting status to disconnected.
     return () => {
       socket.disconnect();
+      
       setStatus(SocketStatus.Disconnected);
     };
   }, []);
