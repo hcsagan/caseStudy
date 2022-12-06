@@ -1,27 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import IconButton from "./IconButton";
 import Animated, {
-  interpolateNode,
   Extrapolate,
-  EasingNode,
-  Value,
-  timing,
+  useSharedValue,
+  withTiming,
+  Easing,
+  interpolate,
+  useAnimatedStyle,
 } from "react-native-reanimated";
-import { transformOrigin } from "react-native-redash";
-
-const openConfig = {
-  toValue: 1,
-  duration: 500,
-  easing: EasingNode.in(EasingNode.sin),
-};
-
-const closeConfig = {
-  toValue: 0,
-  duration: 500,
-  easing: EasingNode.out(EasingNode.sin),
-};
+import IconButton from "./IconButton";
 
 interface ContactDetailsProps {
   email: string;
@@ -30,23 +17,44 @@ interface ContactDetailsProps {
 }
 
 const ContactDetails = ({ email, cell, phone }: ContactDetailsProps) => {
-  const transition = useRef(new Value(0)).current;
-  const [open, setOpen] = useState<boolean | undefined>(undefined);
+  const transition = useSharedValue<number>(0);
+  const lastAction = useSharedValue<'opening' | 'closing'>('closing');
 
-  useEffect(() => {
-    // not pretty. had to make open state nullable so I can bypass first render
-    open !== undefined && animate(open ? openConfig : closeConfig);
-  }, [open]);
+  const animate = () => {
+    "worklet";
 
-  const animate = (action: Animated.TimingConfig) => {
-    timing(transition, action).start();
+    if (lastAction.value === 'opening') {
+      transition.value = withTiming(0, {
+        duration: 500,
+        easing: Easing.out(Easing.ease)
+      });
+      lastAction.value = 'closing';
+    }
+
+    if (lastAction.value === "closing") {
+      transition.value = withTiming(1, {
+        duration: 500,
+        easing: Easing.in(Easing.ease)
+      });
+      lastAction.value = 'opening';
+    }
   };
 
-  const rotate = interpolateNode(transition, {
-    inputRange: [0.2, 0.8],
-    outputRange: [0, -Math.PI / 2],
-    extrapolate: Extrapolate.CLAMP,
-  });
+  const arrowStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: -1
+        },
+        {
+          rotate: interpolate(transition.value, [0.2, 0.8], [0, -90], Extrapolate.CLAMP) + "deg"
+        },
+        {
+          translateY: 1
+        },
+      ]
+    }
+  }, []);
 
   const links = [
     {
@@ -78,17 +86,12 @@ const ContactDetails = ({ email, cell, phone }: ContactDetailsProps) => {
         <Text style={[styles.text, styles.headerText]}>Contact</Text>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => setOpen((open) => !open)}
+          onPress={animate}
         >
           <View style={styles.detailsButton}>
             <Text style={styles.detailsButtonText}>DETAILS</Text>
             <Animated.View
-              style={{
-                transform: transformOrigin(
-                  { x: 0, y: -1 },
-                  { rotate }
-                ) as Animated.AnimatedTransform,
-              }}
+              style={arrowStyle}
             >
               <Entypo name="chevron-left" color="#557" size={20} />
             </Animated.View>
@@ -100,7 +103,7 @@ const ContactDetails = ({ email, cell, phone }: ContactDetailsProps) => {
           <IconButton
             {...item}
             index={index}
-            open={transition}
+            transition={transition}
             key={index.toString()}
           />
         ))}

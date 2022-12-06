@@ -17,7 +17,7 @@ import Animated, {
 import { Entypo } from "@expo/vector-icons";
 import Header from "../components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { MainNavigatorParamList, RootNavigatorParamList } from "../../App";
+import { MainNavigatorParamList } from "../../App";
 
 interface ButtonProps {
   label: string;
